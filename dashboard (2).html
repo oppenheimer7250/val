@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080408;color:#e8d0d8;font-family:'DM Sans',sans-serif;min-height:100vh}
+
+/* LOGIN */
+#loginScreen{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#080408;z-index:100;
+}
+.login-card{
+  background:#140a10;border:1px solid #301020;
+  border-radius:20px;padding:48px 40px;
+  width:min(320px,90vw);text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.login-symbol{font-size:2rem;margin-bottom:20px;display:block}
+.login-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;color:#e8326a;
+  margin-bottom:28px;font-style:italic;
+}
+.login-input{
+  width:100%;padding:12px 16px;
+  background:#1e0d16;border:1px solid #301020;
+  border-radius:10px;color:#f0e0e8;
+  font-family:'DM Mono',monospace;font-size:.9rem;
+  outline:none;margin-bottom:12px;letter-spacing:.1em;
+}
+.login-input:focus{border-color:#e8326a}
+.login-input::placeholder{color:#5a2535;letter-spacing:0}
+.login-btn{
+  width:100%;padding:12px;
+  background:linear-gradient(135deg,#c41e53,#e8326a);
+  color:white;border:none;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;margin-top:4px;
+}
+.login-err{color:#e8326a;font-size:.8rem;margin-top:10px;min-height:18px}
+
+/* DASHBOARD */
+#dashboard{display:none}
+
+.dash-header{
+  background:#0d060a;border-bottom:1px solid #1e0a10;
+  padding:16px 24px;
+  display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:10px;
+  position:sticky;top:0;z-index:50;
+}
+.dash-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;font-style:italic;color:#e8326a;
+}
+.dash-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.ctrl-btn{
+  background:transparent;border:1px solid #301020;
+  color:#c0a0b0;padding:7px 14px;border-radius:8px;
+  font-size:.72rem;cursor:pointer;
+  font-family:'DM Mono',monospace;
+  transition:border-color .2s,color .2s;white-space:nowrap;
+}
+.ctrl-btn:hover{border-color:#e8326a;color:#e8326a}
+.ctrl-btn.danger{border-color:#3a0a18;color:#804060}
+.ctrl-btn.danger:hover{border-color:#e8326a;color:#ff4060}
+
+/* USER SELECTOR */
+.user-bar{
+  background:#0a0408;border-bottom:1px solid #1e0a10;
+  padding:12px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.user-label{font-size:.75rem;color:#805060;font-family:'DM Mono',monospace;white-space:nowrap}
+.user-select{
+  background:#140a10;border:1px solid #301020;
+  color:#f0e0e8;padding:8px 12px;border-radius:8px;
+  font-family:'DM Mono',monospace;font-size:.8rem;
+  outline:none;cursor:pointer;flex:1;min-width:200px;
+}
+.user-select:focus{border-color:#e8326a}
+
+/* FINAL HERO */
+.final-hero{
+  background:linear-gradient(160deg,#1a0510 0%,#0d030a 100%);
+  border-bottom:1px solid #2a1020;
+  padding:48px 28px;text-align:center;position:relative;overflow:hidden;
+}
+.final-hero::before{
+  content:'';position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(232,50,106,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.final-label{
+  font-family:'DM Mono',monospace;font-size:.68rem;
+  color:#e8326a;letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:20px;opacity:.8;
+}
+.final-q{
+  font-family:'Cormorant Garamond',serif;font-size:1rem;
+  font-style:italic;color:rgba(255,255,255,.45);
+  margin-bottom:24px;line-height:1.6;
+}
+.final-answer{
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  font-style:italic;color:#fff;line-height:1.7;
+  max-width:560px;margin:0 auto;position:relative;z-index:1;
+}
+.final-answer.empty{color:rgba(255,255,255,.25);font-size:1rem}
+
+/* STATS */
+.stats-bar{display:flex;gap:0;border-bottom:1px solid #1e0a10;overflow-x:auto}
+.stat-item{
+  flex:1;min-width:80px;padding:20px 16px;
+  text-align:center;border-right:1px solid #1e0a10;
+}
+.stat-item:last-child{border-right:none}
+.stat-num{
+  font-family:'DM Mono',monospace;font-size:1.5rem;
+  color:#e8326a;display:block;margin-bottom:4px;
+}
+.stat-label{
+  font-size:.65rem;color:rgba(232,208,216,.45);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+
+/* ANSWERS */
+.answers-wrap{padding:24px;max-width:720px;margin:0 auto}
+
+.section-divider{
+  display:flex;align-items:center;gap:12px;
+  margin:36px 0 18px;
+}
+.section-divider span{
+  font-family:'DM Mono',monospace;font-size:.66rem;
+  color:rgba(232,208,216,.4);text-transform:uppercase;
+  letter-spacing:.12em;white-space:nowrap;
+}
+.section-divider::before,.section-divider::after{
+  content:'';flex:1;height:1px;background:#1e0a10;
+}
+
+.answer-card{
+  background:#0d060a;border:1px solid #1e0a10;
+  border-radius:14px;padding:20px 22px;
+  margin-bottom:12px;position:relative;
+  transition:border-color .2s;
+}
+.answer-card:hover{border-color:#2a1020}
+.answer-card.escape-card{border-color:rgba(232,50,106,.2);background:#0f060a}
+.answer-card.text-card{background:#0a0610;border-color:#1a1030}
+.answer-card.unanswered{
+  background:transparent;border:1px dashed #1e0a10;opacity:.4;
+}
+
+.q-num{
+  font-family:'DM Mono',monospace;font-size:.66rem;
+  color:#e8326a;margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:.1em;opacity:.75;
+}
+.q-display{
+  font-size:.83rem;color:rgba(232,208,216,.7);
+  line-height:1.55;margin-bottom:14px;
+}
+.a-display{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem;color:#f5e8ee;line-height:1.6;
+}
+.a-display.text-answer{font-size:1.2rem;color:#ffffff;font-style:italic}
+.a-display.empty-answer{color:rgba(232,208,216,.2);font-size:.85rem;font-family:'DM Sans',sans-serif;font-style:italic}
+
+.escape-badge{
+  position:absolute;top:14px;right:14px;
+  background:rgba(232,50,106,.15);color:#ff6090;
+  font-size:.65rem;padding:3px 10px;border-radius:20px;
+  font-family:'DM Mono',monospace;
+}
+.time-badge{
+  position:absolute;bottom:12px;right:14px;
+  font-family:'DM Mono',monospace;font-size:.62rem;
+  color:rgba(232,208,216,.28);
+}
+
+.loading-dash{
+  display:flex;align-items:center;justify-content:center;
+  height:200px;color:rgba(232,208,216,.3);
+  font-family:'DM Mono',monospace;font-size:.8rem;letter-spacing:.1em;
+}
+
+/* Modal */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  display:flex;align-items:center;justify-content:center;
+  z-index:200;display:none;
+}
+.modal-overlay.show{display:flex}
+.modal-box{
+  background:#140a10;border:1px solid #301020;
+  border-radius:16px;padding:32px;
+  width:min(320px,90vw);text-align:center;
+}
+.modal-box p{color:rgba(232,208,216,.8);font-size:.9rem;line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:10px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;border:none}
+.modal-cancel{background:#1e0a10;color:#c0a0b0}
+.modal-confirm{background:linear-gradient(135deg,#8a0a2a,#c41e53);color:white}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <span class="login-symbol">🔐</span>
+    <div class="login-title">Admin Access</div>
+    <input class="login-input" id="adminPass" type="password" placeholder="Enter access key" autocomplete="off"/>
+    <button class="login-btn" onclick="adminLogin()">Enter</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box">
+    <p id="deleteModalText">Delete all data for this user?</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+  <div class="dash-header">
+    <div class="dash-title">Prachi — Answers</div>
+    <div class="dash-controls">
+      <button class="ctrl-btn" onclick="loadDashboard()">↻ Refresh</button>
+      <button class="ctrl-btn danger" onclick="openDeleteModal()">🗑 Delete user data</button>
+    </div>
+  </div>
+
+  <div class="user-bar">
+    <span class="user-label">VIEWING:</span>
+    <select class="user-select" id="userSelect" onchange="onUserChange()">
+      <option value="">Loading users...</option>
+    </select>
+    <span id="userStatus" style="font-family:'DM Mono',monospace;font-size:.72rem;color:rgba(232,208,216,.4)"></span>
+  </div>
+
+  <!-- Q55 HERO -->
+  <div class="final-hero">
+    <div class="final-label">✦ The Last Question ✦</div>
+    <div class="final-q">"Tumhi ho jo mujhe samajhte ho" — yeh tumne kaha tha.<br/>Toh phir kya hua?</div>
+    <div class="final-answer" id="finalAnswerDisplay">—</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num" id="statAnswered">—</span>
+      <span class="stat-label">Answered</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="statEscape">—</span>
+      <span class="stat-label">Escaped 🙃</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="statText">—</span>
+      <span class="stat-label">Text boxes</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="statComplete">—</span>
+      <span class="stat-label">Complete</span>
+    </div>
+  </div>
+
+  <!-- ANSWERS LIST -->
+  <div class="answers-wrap" id="answersWrap">
+    <div class="loading-dash">Select a user to view answers</div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL='https://zegezearsbpvomoazgju.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplZ2V6ZWFyc2Jwdm9tb2F6Z2p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Mzk1NzUsImV4cCI6MjA5MTExNTU3NX0.0Z08rl4OgvrITuhBFlNQiY4NwmwNkO3ttLbi6IdoxPs';
+const ADMIN_PASS='FCKTHSALL';
+let selectedEmail='';
+let allUsers=[];
+
+const QUESTIONS=[
+  {type:'single',text:'Jab tum kisi naye group ya circle mein enter karti ho — tumhara pehla instinct kya hota hai?'},
+  {type:'single',text:'Koi naya insaan tumhari life mein aata hai. Tum use kab seriously lena shuru karti ho?'},
+  {type:'text',text:'Ek aisi cheez jo tum kisi bhi naye relationship mein sabse pehle dhundti ho.'},
+  {type:'single',text:'Kabhi aisa moment aaya jab life suddenly exciting lagne lagi?'},
+  {type:'single',text:'Us waqt jo decisions liye — tumne liye ya circumstances ne?'},
+  {type:'text',text:'Ek aisa waqt jab trust galat sabit hua — pehla reaction?'},
+  {type:'single',text:'Jab koi future ka promise kare — tum kaise decide karti ho believe karna hai?'},
+  {type:'single',text:'Agar kisi ke saath risky situation mein loss hota — tumhara reaction?'},
+  {type:'text',text:'Us time ke logon ko aaj kaise describe karogi?'},
+  {type:'single',text:'Kya kabhi aisa laga ki koi genuinely invested tha bina reason ke?'},
+  {type:'single',text:'Jab kisi ne bina maange kuch kiya — tumhara default response?'},
+  {type:'text',text:'Koi tha jo samajhta tha bina bole bhi — kaun tha woh tumhare liye?'},
+  {type:'single',text:'Jab group dynamics shift hone lage — tum ne kya kiya?'},
+  {type:'single',text:'Koi tha jo hamesha tha par seriously nahi liya — kyun?'},
+  {type:'text',text:'Woh insaan jo dikhta nahi tha clearly par tha — ab kya sochti ho?'},
+  {type:'single',text:'Jab koi bad times mein consistently present raha — tum ne use kya diya?'},
+  {type:'single',text:'Kya tumne kabhi kisi ko close rakha par accountable nahi hona pada?'},
+  {type:'text',text:'"Tune mujhe apne paas kyun rakha agar seriously nahi lena tha" — kya kahogi?'},
+  {type:'single',text:'Jab koi genuinely dekhta tha aur kabhi against nahi kiya — tum ne use kya samjha?'},
+  {type:'single',text:'"Jo log care karte hain unhe hum for granted lete hain" — kitna true hai?'},
+  {type:'text',text:'Koi tha jise for granted liya — consciously ya unconsciously. Ab kya feel hota hai?'},
+  {type:'single',text:'Koi tha jo attention deta tha naye circle mein — seriously kyun nahi liya?'},
+  {type:'single',text:'Kya tumne kabhi kisi ko hurt kiya — not intentionally?'},
+  {type:'text',text:'Ek moment jab kisi ke saath aisa kiya jo sahi nahi tha — acknowledge kiya?'},
+  {type:'single',text:'Jab koi baar baar kuch karta raha aur tum jaanti thi — respond nahi kiya clearly?'},
+  {type:'single',text:'Tumhare liye relationship mein sabse important kya hai?'},
+  {type:'single',text:'Koi jo deeply love kare — tumhara default reaction?'},
+  {type:'text',text:'Tum kya sochti ho tumhare layak kya hai? Honestly.'},
+  {type:'single',text:'Kya tumne kabhi khud ko aisi situation mein rakha jahan fully loved nahi thi?'},
+  {type:'single',text:'Jo insaan tumse sabse zyada samjha — uske saath kya hua?'},
+  {type:'single',text:'Koi tha jo dekh sakta tha aur usne fix karne ki koshish nahi ki — woh kya tha?'},
+  {type:'text',text:'Woh insaan jo samjhta tha — uske baare mein kya socha? Uski feelings ke baare mein.'},
+  {type:'single',text:'Agar woh quietly chala jaaye — pehla honest feeling?'},
+  {type:'single',text:'Usne jo diya — kya tum ne uske barabar kuch diya?'},
+  {type:'text',text:'Agar use kuch keh sakti — directly — kya kahogi?'},
+  {type:'single',text:'Aaj tumhari life mein kya sabse zyada drain karta hai?'},
+  {type:'single',text:'Kya tumhe lagta hai tum sahi jagah ho abhi?'},
+  {type:'text',text:'Ek cheez jo chahti ho koi samjhe — jo kisi ko nahi bola.'},
+  {type:'single',text:'Koi genuinely connected tha — usse door kyun rakha?'},
+  {type:'single',text:'Agar woh wapas aaye — kya tum ready hogi honestly answer karne ke liye?'},
+  {type:'text',text:'"Mat jao, atleast waise mat jao jaise doosron ne kiya" — yeh tumne kaha tha? Woh insaan kaun tha?'},
+  {type:'single',text:'Woh khush tha ya kuch carry kar raha tha andar?'},
+  {type:'text',text:'Agar uske andar jhank sakti — jo feel karta tha par kehta nahi tha — woh kya hoga?'},
+  {type:'single',text:'Kya woh tumse zyada invest tha — tumhari comparison mein?'},
+  {type:'single',text:'Uski jo cheez tumhe sabse zyada yaad rahegi?'},
+  {type:'text',text:'Kuch aisa jo kabhi nahi kaha par kehna chahti thi.'},
+  {type:'single',text:'Usne jo diya — kya woh waste tha uske liye?'},
+  {type:'text',text:'"Kuch log sirf hone ke liye aate hain" — real lagta hai? Aur kya woh tha woh insaan?'},
+  {type:'single',text:'"Tere liye bahut log hain, mere liye sirf tu hai" — tum us baat ko kaise lete ho?'},
+  {type:'text',text:'Bachpan mein kya banana chahti thi? Woh dream jo shayad kisi ko nahi bataya.'},
+  {type:'single',text:'Jab sab theek nahi hota — khud ko kaise sambhalti ho?'},
+  {type:'text',text:'Ek cheez jo chahti ho koi kare — jo abhi tak kisi ne nahi kiya.'},
+  {type:'single',text:'Tum khud ko kaisi insaan maanti ho — honestly?'},
+  {type:'text',text:'Agar zindagi mein ek cheez change kar sakti — woh kya hota?'},
+  {type:'final',text:'"Tumhi ho jo mujhe samajhte ho" — toh phir kya hua? Aur kya chahti ho?'}
+];
+
+const SECTION_LABELS={
+  0:'Section 1 — Who She Is',
+  3:'Section 2 — Abundance & Judgment',
+  8:'Section 3 — The Group & People',
+  15:'Section 4 — What She Does With People Who Stay',
+  21:'Section 5 — The Disrespect & Early Days',
+  25:'Section 6 — What She Thinks Love Is',
+  30:'Section 7 — Draven',
+  35:'Section 8 — Her Condition Now',
+  38:'Section 9 — The Real Questions',
+  40:'Section 10 — Don\'t Leave Me',
+  41:'Section 11 — His Inner World',
+  48:'Section 12 — "So Many For You"',
+  49:'Section 13 — Her Inner Child',
+  54:'✦ The Final Question'
+};
+
+// LOGIN
+function adminLogin(){
+  const val=document.getElementById('adminPass').value;
+  if(val===ADMIN_PASS){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    loadDashboard();
+  } else {
+    document.getElementById('loginErr').textContent='Wrong key.';
+  }
+}
+document.getElementById('adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin()});
+
+// SUPABASE
+async function supaGet(path){
+  const res=await fetch(SUPABASE_URL+path,{
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+  });
+  try{return await res.json()}catch(e){return null}
+}
+
+async function supaDelete(path){
+  await fetch(SUPABASE_URL+path,{
+    method:'DELETE',
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+  });
+}
+
+// LOAD DASHBOARD
+async function loadDashboard(){
+  // Load all users
+  const users=await supaGet('/rest/v1/form_users?order=created_at.desc&limit=50');
+  allUsers=Array.isArray(users)?users:[];
+
+  const sel=document.getElementById('userSelect');
+  if(allUsers.length===0){
+    sel.innerHTML='<option value="">No users yet</option>';
+    return;
+  }
+
+  sel.innerHTML=allUsers.map(u=>
+    `<option value="${u.email}">${u.email} ${u.completed?'✓':''}</option>`
+  ).join('');
+
+  // Auto-select first or keep current
+  if(!selectedEmail||!allUsers.find(u=>u.email===selectedEmail)){
+    selectedEmail=allUsers[0].email;
+  }
+  sel.value=selectedEmail;
+  await loadUserAnswers(selectedEmail);
+}
+
+function onUserChange(){
+  selectedEmail=document.getElementById('userSelect').value;
+  if(selectedEmail) loadUserAnswers(selectedEmail);
+}
+
+async function loadUserAnswers(email){
+  document.getElementById('answersWrap').innerHTML='<div class="loading-dash">Loading...</div>';
+
+  // User status
+  const user=allUsers.find(u=>u.email===email);
+  if(user){
+    document.getElementById('userStatus').textContent=
+      (user.completed?'✓ Completed':'In progress')+
+      ' · '+new Date(user.last_seen).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  }
+
+  // Load answers for this user
+  const answers=await supaGet('/rest/v1/form_answers?user_email=eq.'+encodeURIComponent(email)+'&order=question_index&limit=200');
+  const ansMap={};
+  if(Array.isArray(answers)) answers.forEach(a=>{ansMap[a.question_index]=a});
+
+  // Stats
+  const answered=Object.keys(ansMap).length;
+  const escaped=Object.values(ansMap).filter(a=>a.is_escape).length;
+  const textAnswered=QUESTIONS.filter((q,i)=>q.type!=='single'&&ansMap[i]&&ansMap[i].answer).length;
+  document.getElementById('statAnswered').textContent=answered+'/'+QUESTIONS.length;
+  document.getElementById('statEscape').textContent=escaped;
+  document.getElementById('statText').textContent=textAnswered;
+  document.getElementById('statComplete').textContent=user&&user.completed?'Yes ✓':'No';
+
+  // Final answer
+  const finalA=ansMap[QUESTIONS.length-1];
+  const finalEl=document.getElementById('finalAnswerDisplay');
+  if(finalA&&finalA.answer){
+    finalEl.textContent=finalA.answer;
+    finalEl.className='final-answer';
+  } else {
+    finalEl.textContent='Not answered yet.';
+    finalEl.className='final-answer empty';
+  }
+
+  // Render answers
+  let html='';
+  for(let i=0;i<QUESTIONS.length;i++){
+    if(SECTION_LABELS[i]!==undefined){
+      html+=`<div class="section-divider"><span>${SECTION_LABELS[i]}</span></div>`;
+    }
+    const q=QUESTIONS[i];
+    const a=ansMap[i];
+    const isText=q.type!=='single';
+    const isEscape=a&&a.is_escape;
+    const mins=a?Math.floor(a.time_spent_seconds/60):0;
+    const secs=a?a.time_spent_seconds%60:0;
+    const timeStr=mins>0?`${mins}m ${secs}s`:`${secs||0}s`;
+
+    if(!a){
+      html+=`<div class="answer-card unanswered">
+        <div class="q-num">Q${i+1} · ${isText?'Text':'Choice'}</div>
+        <div class="q-display">${q.text}</div>
+        <div class="a-display empty-answer">— Not answered yet —</div>
+      </div>`;
+      continue;
+    }
+
+    const cardClass=isEscape?'escape-card':isText?'text-card':'';
+    html+=`<div class="answer-card ${cardClass}">
+      <div class="q-num">Q${i+1} · ${isText?'Text':'Choice'}</div>
+      <div class="q-display">${q.text}</div>
+      <div class="a-display ${isText?'text-answer':''}">${a.answer||'—'}</div>
+      ${isEscape?'<div class="escape-badge">🙃 Escaped</div>':''}
+      <div class="time-badge">${timeStr}</div>
+    </div>`;
+  }
+
+  document.getElementById('answersWrap').innerHTML=html;
+}
+
+// DELETE
+let emailToDelete='';
+
+function openDeleteModal(){
+  if(!selectedEmail){alert('Select a user first.');return}
+  emailToDelete=selectedEmail;
+  document.getElementById('deleteModalText').textContent=
+    'Delete all data for '+emailToDelete+'? This cannot be undone.';
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('deleteModal').classList.remove('show');
+  emailToDelete='';
+}
+
+async function confirmDelete(){
+  if(!emailToDelete) return;
+  closeModal();
+  await supaDelete('/rest/v1/form_answers?user_email=eq.'+encodeURIComponent(emailToDelete));
+  await supaDelete('/rest/v1/form_users?email=eq.'+encodeURIComponent(emailToDelete));
+  selectedEmail='';
+  await loadDashboard();
+}
+</script>
+</body>
+</html>
