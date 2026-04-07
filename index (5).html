@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>For Prachi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --pink-soft: #fff0f5;
+  --pink-mid: #ffb3cc;
+  --pink-deep: #e8326a;
+  --pink-dark: #c41e53;
+  --rose: #ff4d8d;
+  --cream: #fffaf8;
+  --text-dark: #1a0a10;
+  --text-mid: #6b3a4a;
+  --text-light: #b07a8a;
+  --gold: #d4a853;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--pink-soft);
+  min-height: 100vh;
+  overflow: hidden;
+  transition: background 1.2s ease;
+}
+
+/* FLOATING PARTICLES */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatParticle linear infinite;
+  opacity: 0;
+}
+@keyframes floatParticle {
+  0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* SCREENS */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ENTRY SCREEN */
+#entryScreen {
+  background: linear-gradient(160deg, #fff0f5 0%, #ffd6e8 60%, #ffb3cc 100%);
+}
+
+.entry-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  padding: 40px 32px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(232,50,106,0.15), 0 4px 20px rgba(0,0,0,0.06);
+  animation: cardFloat 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes cardFloat {
+  from { transform: translateY(40px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.entry-symbol {
+  text-align: center;
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+.entry-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-style: italic;
+  color: var(--pink-deep);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.entry-description {
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  line-height: 1.75;
+  margin-bottom: 28px;
+  text-align: left;
+  border-left: 2px solid var(--pink-mid);
+  padding-left: 16px;
+}
+
+.entry-description p { margin-bottom: 10px; }
+.entry-description p:last-child { margin-bottom: 0; }
+
+.form-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid #f0d0da;
+  border-radius: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background: white;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-input:focus {
+  border-color: var(--pink-deep);
+  box-shadow: 0 0 0 3px rgba(232,50,106,0.1);
+}
+.form-input::placeholder { color: #cca0b0; }
+
+.entry-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--rose), var(--pink-deep));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 4px;
+  box-shadow: 0 6px 20px rgba(232,50,106,0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.entry-btn:active { transform: scale(0.98); }
+
+.entry-error {
+  color: var(--pink-deep);
+  font-size: 0.82rem;
+  margin-top: 8px;
+  text-align: center;
+  min-height: 20px;
+}
+
+/* WELCOME SCREEN */
+#welcomeScreen {
+  background: linear-gradient(160deg, #fff0f5 0%, #ffe0ee 100%);
+  text-align: center;
+}
+
+.welcome-content {
+  max-width: 360px;
+  animation: fadeUp 0.8s ease both;
+}
+@keyframes fadeUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.welcome-icon { font-size: 3.5rem; margin-bottom: 24px; display: block; }
+
+.welcome-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+
+.welcome-sub {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+.start-btn {
+  padding: 16px 48px;
+  background: linear-gradient(135deg, var(--rose), var(--pink-deep));
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(232,50,106,0.35);
+  position: relative;
+  overflow: hidden;
+}
+.start-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--rose), var(--pink-deep));
+  opacity: 0;
+  animation: btnPulse 2s ease-in-out infinite;
+  z-index: -1;
+}
+@keyframes btnPulse {
+  0%,100% { transform: scale(1); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 0.3; }
+}
+
+/* QUESTION SCREEN */
+#questionScreen {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.q-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Progress */
+.progress-bar-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.3);
+  z-index: 20;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--pink-deep);
+  transition: width 0.5s ease;
+}
+
+/* Nav buttons */
+.q-nav {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 20;
+}
+
+.nav-back {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  color: var(--text-dark);
+}
+.nav-back:disabled { opacity: 0.3; pointer-events: none; }
+
+.q-counter {
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* Question content */
+.q-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 28px 40px;
+  position: relative;
+  z-index: 10;
+  animation: qFadeIn 0.5s ease both;
+}
+@keyframes qFadeIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.q-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 32px;
+  max-width: 340px;
+  color: var(--text-dark);
+  transition: color 0.6s;
+}
+
+/* Options */
+.options-wrap {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-btn {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(232,50,106,0.2);
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.option-btn:hover { background: rgba(255,255,255,0.9); border-color: var(--pink-deep); }
+.option-btn.selected {
+  background: linear-gradient(135deg, rgba(255,77,141,0.15), rgba(232,50,106,0.15));
+  border-color: var(--pink-deep);
+  color: var(--pink-dark);
+  font-weight: 500;
+}
+.option-btn.escape-option { border-color: rgba(232,50,106,0.1); color: var(--text-light); }
+
+/* Text area */
+.q-textarea {
+  width: 100%;
+  max-width: 360px;
+  min-height: 120px;
+  padding: 16px 18px;
+  border: 1.5px solid rgba(232,50,106,0.2);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  resize: none;
+  outline: none;
+  line-height: 1.6;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.q-textarea:focus {
+  border-color: var(--pink-deep);
+  box-shadow: 0 0 0 3px rgba(232,50,106,0.1);
+  background: rgba(255,255,255,0.9);
+}
+.q-textarea::placeholder { color: #cca0b0; }
+
+/* Juthi popup */
+.juthi-popup {
+  width: 100%;
+  max-width: 360px;
+  margin-top: 12px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 14px;
+  border-left: 3px solid var(--pink-deep);
+  font-size: 0.88rem;
+  color: var(--pink-deep);
+  display: none;
+  animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  font-style: italic;
+}
+.juthi-popup.show { display: block; }
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Next button */
+.next-btn {
+  margin-top: 20px;
+  padding: 14px 40px;
+  background: linear-gradient(135deg, var(--rose), var(--pink-deep));
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(232,50,106,0.3);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+.next-btn.visible { opacity: 1; pointer-events: all; }
+.next-btn:active { transform: scale(0.97); }
+
+/* Submit btn */
+.submit-btn {
+  margin-top: 20px;
+  padding: 14px 40px;
+  background: linear-gradient(135deg, #d4a853, #b8860b);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(212,168,83,0.4);
+  display: none;
+}
+
+/* CLOSING SCREEN */
+#closingScreen {
+  background: #0d0508;
+  text-align: center;
+}
+
+.closing-content {
+  max-width: 360px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.closing-symbol { font-size: 2.5rem; margin-bottom: 28px; display: block; }
+
+.closing-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-style: italic;
+  color: #fff;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.closing-body {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+
+.closing-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255,180,180,0.7);
+  line-height: 1.7;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 20px;
+  margin-top: 12px;
+}
+
+/* MOOD BACKGROUNDS */
+body.mood-default { background: linear-gradient(160deg, #fff0f5 0%, #ffd6e8 100%); }
+body.mood-warm    { background: linear-gradient(160deg, #fff5e6 0%, #ffd0a0 100%); }
+body.mood-deep    { background: linear-gradient(160deg, #ffe0ee 0%, #d4607a 100%); }
+body.mood-dark    { background: linear-gradient(160deg, #2d0a14 0%, #1a0508 100%); }
+body.mood-black   { background: #000000; }
+body.mood-neutral { background: linear-gradient(160deg, #f5f0f2 0%, #e8d8dd 100%); }
+
+/* Q-text color in dark modes */
+body.mood-dark .q-text  { color: #ffd0dc; }
+body.mood-black .q-text { color: #ffffff; }
+body.mood-deep .q-text  { color: #fff0f5; }
+body.mood-dark .option-btn  { background: rgba(255,255,255,0.08); color: #ffd0dc; border-color: rgba(255,100,140,0.3); }
+body.mood-black .option-btn { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.15); }
+body.mood-dark .q-textarea  { background: rgba(255,255,255,0.08); color: #ffd0dc; }
+body.mood-black .q-textarea { background: rgba(255,255,255,0.05); color: #fff; border-color: rgba(255,255,255,0.15); }
+body.mood-dark .q-counter, body.mood-black .q-counter { color: rgba(255,200,210,0.7); background: rgba(255,255,255,0.08); }
+body.mood-dark .nav-back, body.mood-black .nav-back { background: rgba(255,255,255,0.1); color: white; }
+body.mood-dark .juthi-popup, body.mood-black .juthi-popup { background: rgba(20,5,10,0.9); color: #ff6090; }
+
+/* Loading */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--pink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.5s;
+}
+.loading-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--pink-deep);
+  margin: 0 4px;
+  animation: dotBounce 0.8s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.15s; }
+.loading-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dotBounce {
+  0%,100% { transform: translateY(0); opacity: 0.4; }
+  50%      { transform: translateY(-10px); opacity: 1; }
+}
+</style>
+</head>
+<body class="mood-default">
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div style="display:flex">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+</div>
+
+<!-- PARTICLES -->
+<div id="particles"></div>
+
+<!-- ENTRY SCREEN -->
+<div class="screen active" id="entryScreen">
+  <div class="entry-card">
+    <div class="entry-symbol">🌸</div>
+    <div class="entry-name">For Prachi</div>
+    <div class="entry-description">
+      <p>I need you to answer these.</p>
+      <p>Not because I'm trying to hold on. Not because I want to make you feel anything.</p>
+      <p>Because the condition you've left me in — I can't stay here. I don't do well in between. Either I go all in or I disappear completely. There's no third option for me.</p>
+      <p>Right now my mind is splitting between two directions and I can't function like this. When I'm uncertain I stop building. I stop moving. Everything I'm supposed to be doing — it stalls. Because you're somewhere in the background unresolved.</p>
+      <p>These answers will tell me what to do. Whether to fight for this or leave it like a dream that happened and ended.</p>
+      <p>I'll show you what your answers made me decide. And why.</p>
+      <p>You don't have to say what I want to hear. Say what's true. That's all I need from you — one time.</p>
+    </div>
+    <input class="form-input" id="emailInput" type="email" placeholder="Tumhara Gmail" autocomplete="email"/>
+    <input class="form-input" id="passwordInput" type="password" placeholder="Password banao"/>
+    <input class="form-input" id="passkeyInput" type="password" placeholder="Access key"/>
+    <button class="entry-btn" onclick="handleEntry()">Andar Aao →</button>
+    <div class="entry-error" id="entryError"></div>
+  </div>
+</div>
+
+<!-- WELCOME SCREEN -->
+<div class="screen" id="welcomeScreen">
+  <div class="welcome-content">
+    <span class="welcome-icon">💌</span>
+    <div class="welcome-title">Kuch sawaal hain,<br/>Prachi.</div>
+    <div class="welcome-sub">
+      Honest rehna.<br/>
+      Koi judgment nahi. Koi discussion nahi baad mein.<br/>
+      Bas jo sach lage — woh.
+    </div>
+    <button class="start-btn" onclick="startForm()">Shuru karein →</button>
+  </div>
+</div>
+
+<!-- QUESTION SCREEN -->
+<div class="screen" id="questionScreen">
+  <div class="q-container">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="q-nav">
+      <button class="nav-back" id="backBtn" onclick="goBack()" disabled>←</button>
+      <div class="q-counter" id="qCounter">1 / 53</div>
+      <div style="width:40px"></div>
+    </div>
+    <div class="q-content" id="qContent">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- CLOSING SCREEN -->
+<div class="screen" id="closingScreen">
+  <div class="closing-content">
+    <span class="closing-symbol">🕊️</span>
+    <div class="closing-title">Shukriya,<br/>Prachi.</div>
+    <div class="closing-body">
+      Genuinely.<br/><br/>
+      You didn't have to do this. But you did — without asking why, without negotiating, without making it about something else. That itself told me something.<br/><br/>
+      Whatever I decide from here — it comes from clarity. Not anger. Not sunk cost. Not ego.<br/><br/>
+      You gave me that.
+    </div>
+    <div class="closing-line">
+      I'll show you what I decided.<br/>
+      And I'll tell you why your answers led me there.<br/><br/>
+      <strong style="color:rgba(255,160,160,0.9)">This was the last thing I needed from you.<br/>
+      And you came through — like you always did<br/>when it actually mattered.</strong><br/><br/>
+      <em style="font-size:0.82rem; color:rgba(255,255,255,0.35)">
+        From here — one path or the other.<br/>
+        No middle. No orbit. No waiting.<br/>
+        Your words decided it.
+      </em>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://zegezearsbpvomoazgju.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplZ2V6ZWFyc2Jwdm9tb2F6Z2p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Mzk1NzUsImV4cCI6MjA5MTExNTU3NX0.0Z08rl4OgvrITuhBFlNQiY4NwmwNkO3ttLbi6IdoxPs';
+const PASSKEY = 'TisTimOnlYorNBD';
+const TOTAL_Q = 53;
+
+// ESCAPE PHRASES
+const ESCAPE_PHRASES = [
+  'honestly nahi pata','pata nahi','shayad','samajh nahi aaya',
+  'nahi pata','complicated hai','ek reason nahi hai',
+  'honestly complicated tha','abhi bhi samajh nahi aayi',
+  'sochna padega','nahi lagta','yeh fair comparison nahi hai',
+  'depend karta hai','pehle kuch nahi'
+];
+
+// MOOD MAP per question index (0-based)
+const MOOD_MAP = {
+  default: [0,1,2,3],
+  warm:    [4,5,6,7,8],
+  deep:    [9,10,11,12,13,14,15,16,17,18,19,20,21],
+  dark:    [22,23,24,25,26,27,28,29,30],
+  neutral: [31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47],
+  deep:    [48,49,50,51],
+  black:   [52]
+};
+
+function getMood(idx) {
+  if (idx <= 3)  return 'mood-default';
+  if (idx <= 8)  return 'mood-warm';
+  if (idx <= 21) return 'mood-deep';
+  if (idx <= 30) return 'mood-dark';
+  if (idx <= 51) return 'mood-neutral';
+  return 'mood-black';
+}
+
+// ALL 53 QUESTIONS
+const QUESTIONS = [
+  // SECTION 1 — Who she is (Q1-Q3)
+  {
+    type:'single',
+    text:'Jab tum kisi naye group ya circle mein enter karti ho — tumhara pehla instinct kya hota hai?',
+    options:['Observe karo, samjho pehle','Connect karo jaldi, energy match karo','Dekho kya mil sakta hai yahaan','Bas exist karo, baaki naturally hoga']
+  },
+  {
+    type:'single',
+    text:'Koi naya insaan tumhari life mein aata hai. Tum use kab seriously lena shuru karti ho?',
+    options:['Jab woh consistently present ho','Jab woh kuch offer kare jo matter kare','Jab tumhara gut feel kare','Jab baaki log bhi usse validate karein']
+  },
+  {
+    type:'text',
+    text:'Ek aisi cheez jo tum kisi bhi naye relationship mein — friendship ho ya kuch aur — sabse pehle dhundti ho. Likho.',
+    placeholder:'Jo seedha dil se aaye...'
+  },
+  // SECTION 2 — Abundance & judgment (Q4-Q8)
+  {
+    type:'single',
+    text:'Kabhi aisa moment aaya jab life suddenly exciting lagne lagi — naye log, naye possibilities, sab kuch aligned lagne laga?',
+    options:['Haan, aur maine fully dive kiya','Haan, par main thodi careful rahi','Nahi, main hamesha grounded rehti hoon','Haan, aur baad mein regret hua']
+  },
+  {
+    type:'single',
+    text:'Us waqt jo decisions liye — kya tum sochti ho woh decisions tumne liye, ya circumstances ne liye?',
+    options:['Maine liye, fully conscious thi','Circumstances ne push kiya tha','Dono ka mix tha','Abhi bhi samajh nahi aayi']
+  },
+  {
+    type:'text',
+    text:'Ek aisa waqt yaad karo jab tumne kisi par ya kisi cheez par trust kiya — aur woh trust galat sabit hua. Us waqt tumhara pehla reaction kya tha — khud ke liye, unke liye?',
+    placeholder:'Jo us waqt andar hua tha...'
+  },
+  {
+    type:'single',
+    text:'Jab koi tumse promise kare future ka — stability ka, return ka, kisi bhi cheez ka — tum kaise decide karti ho believe karna hai ya nahi?',
+    options:['Unka track record dekhti hoon','Jo feel hota hai woh maanti hoon','Baaki log kya bol rahe hain','Situation pe depend karta hai']
+  },
+  {
+    type:'single',
+    text:'Agar koi tumhare saath financially ya emotionally risky situation mein hota — aur tum dono ko loss hota — tumhara reaction kya hoga?',
+    options:['Saath milke handle karo','Khud ko pehle bachao','Unhe blame karo andar se, bahar nahi','Depend karta hai kitna close the']
+  },
+  // SECTION 3 — The group & people (Q9-Q15)
+  {
+    type:'text',
+    text:'Us time ke logon ke baare mein — jo tumhare circle mein the — tum unhe aaj kaise describe karogi? Ek ek ko nahi, bas overall — woh log kaun the tumhare liye?',
+    placeholder:'Jo seedha yaad aaye...'
+  },
+  {
+    type:'single',
+    text:'Kya kabhi aisa laga ki koi tum par genuinely invested tha — bina kisi obvious reason ke?',
+    options:['Haan, aur maine notice kiya tha','Haan, par maine seriously nahi liya','Nahi laga kisi ko','Pata nahi, shayad']
+  },
+  {
+    type:'single',
+    text:'Jab kisi ne tumhare liye kuch kiya — bina maange, bina expectation ke — tumhara default response kya tha?',
+    options:['Grateful hoti thi aur dikhati bhi thi','Andar se grateful, bahar nahi dikhati','Uncomfortable ho jaati thi','Accept kar leti thi, itna bhi nahi sochti thi']
+  },
+  {
+    type:'text',
+    text:'Koi tha us waqt jo tumhe samajhta tha — tumhari situation, tumhara mood, jo tum bol nahi rahi thi woh bhi? Uske baare mein kuch likho. Kaun tha woh tumhare liye.',
+    placeholder:'Agar tha toh...'
+  },
+  {
+    type:'single',
+    text:'Jab group mein dynamics shift hone lage — log change hone lage, distances aane lage — tum ne kya kiya?',
+    options:['Adjust kar liya quietly','Kisi ek ke paas rahi jo safe laga','Khud ko withdraw kar liya','Sab kuch normal dikhane ki koshish ki']
+  },
+  {
+    type:'single',
+    text:'Us circle mein koi tha jise tum ne kabhi fully seriously nahi liya — par woh hamesha tha. Kyun nahi liya seriously?',
+    options:['Timing sahi nahi thi','Woh clearly express nahi karta tha','Meri situation complicated thi','Woh mere liye available tha, isliye safe lagta tha door rakhna']
+  },
+  {
+    type:'text',
+    text:'Woh insaan jo tha — jo dikhta nahi tha clearly par tha — uske baare mein ab kya sochti ho? Agar kuch sochti ho toh.',
+    placeholder:'Sach mein jo aaye...'
+  },
+  // SECTION 4 — What she does with people who stay (Q16-Q21)
+  {
+    type:'single',
+    text:'Jab koi tumhare liye consistently present raha — good times mein nahi, specifically bad times mein — tum ne use kya diya wapas?',
+    options:['Jo maang raha tha woh dene ki koshish ki','Apni presence di','Honestly kuch khaas nahi','Pata nahi kya dena chahiye tha']
+  },
+  {
+    type:'single',
+    text:'Kya tumne kabhi kisi ko deliberately apne paas rakha — close enough to feel safe, par door enough to not be accountable?',
+    options:['Nahi, aisa nahi kiya maine','Shayad, bina realize kiye','Haan, aur I know why','Yeh sawaal samajh nahi aaya mujhe']
+  },
+  {
+    type:'text',
+    text:'Agar koi tum se pooche — "tune mujhe apne paas kyun rakha agar seriously nahi lena tha" — tum kya kahogi? Honestly.',
+    placeholder:'Jo sach mein jawab hoga...'
+  },
+  {
+    type:'single',
+    text:'Jab koi tumhari life mein tha jo tumhe genuinely dekhta tha — tumhari situation, tumhara pain — aur usne kabhi use against nahi kiya tumhare — tum ne us insaan ko kya samjha?',
+    options:['Woh safe tha isliye close rakha','Uski feelings matter karti thi mujhe','Mujhe dar tha us closeness se','Honestly complicated tha']
+  },
+  {
+    type:'single',
+    text:'"Jo log genuinely care karte hain unhe hum often for granted lete hain" — yeh tumhare liye kitna true hai?',
+    options:['Bilkul sach hai, maine bhi kiya','Partially true','Nahi, maine hamesha value ki','Sach hai par main kuch kar nahi sakti thi']
+  },
+  {
+    type:'text',
+    text:'Koi tha tumhari life mein jise tum ne for granted liya — consciously ya unconsciously. Uske baare mein kya feel hota hai ab?',
+    placeholder:'Jo andar se aaye...'
+  },
+  // SECTION 5 — The disrespect & early days (Q22-Q25)
+  {
+    type:'single',
+    text:'Jab tum kisi naye circle mein thi aur koi tha jo tumhe attention deta tha, present tha — par tumne seriously nahi liya — kyun?',
+    options:['Woh mere type ka nahi tha','Meri situation aisi nahi thi','Woh clearly interested tha isliye safe laga door rakhna','Woh mere liye available tha, isliye serious nahi liya']
+  },
+  {
+    type:'single',
+    text:'Kya tumne kabhi kisi ko hurt kiya — not intentionally — sirf isliye ki tum apni situation manage kar rahi thi?',
+    options:['Haan, aur mujhe pata tha','Haan, par tab realize nahi hua','Nahi lagta maine kiya','Shayad, nahi pata']
+  },
+  {
+    type:'text',
+    text:'Ek moment yaad karo jab tumne kisi ke saath aisa kiya jo shayad sahi nahi tha — even if circumstances ne force kiya. Kya hua tha? Aur kya tumne kabhi acknowledge kiya — unhe ya khud ko?',
+    placeholder:'Jo honestly yaad aaye...'
+  },
+  {
+    type:'single',
+    text:'Jab koi tumhare liye baar baar kuch karta raha — aur tum jaanti thi woh kar raha hai kyunki tum matter karti ho — par tumne respond nahi kiya clearly — woh kya tha tumhare liye?',
+    options:['Mujhe genuinely nahi pata tha kaise respond karoon','Maine deliberately avoid kiya','Mujhe darna tha expectations badh jaati','Complicated tha, ek reason nahi hai']
+  },
+  // SECTION 6 — What she thinks love is (Q26-Q30)
+  {
+    type:'single',
+    text:'Tumhare liye relationship mein sabse important kya hai?',
+    options:['Security — emotional aur practical dono','Understanding — jo bina bole samjhe','Freedom — jo control na kare','Consistency — jo kabhi na jaaye']
+  },
+  {
+    type:'single',
+    text:'Koi jo tumse deeply love kare — tumhara default reaction kya hai?',
+    options:['Accept karna aur return karna','Uncomfortable ho jaana','Test karna ki sach mein hai ya nahi','Depend karta hai kaun hai']
+  },
+  {
+    type:'text',
+    text:'Tum kya sochti ho — tumhare layak kya hai? Honestly. Koi judgment nahi. Bas jo andar se lagta hai woh likho.',
+    placeholder:'Seedha dil se...'
+  },
+  {
+    type:'single',
+    text:'Kya tumne kabhi khud ko deliberately aisi situation mein rakha jahan tum fully loved nahi thi — kyunki fully loved hona uncomfortable lagta tha?',
+    options:['Haan, aur ab samajh aayi','Shayad, consciously nahi tha','Nahi, aisa nahi kiya','Haan, kyunki real hona bahut exhausting lagta tha']
+  },
+  {
+    type:'single',
+    text:'Jo insaan tumse sabse zyada samjha ho — past mein ya present mein — uske saath tumhara kya hua?',
+    options:['Woh mere saath hai','Maine use door kar diya','Woh khud chala gaya','Complicated hai']
+  },
+  // SECTION 7 — Draven. Without naming. (Q31-Q35)
+  {
+    type:'single',
+    text:'Koi tha jo dekh sakta tha — tumhari situation, tumhara pain, tumhara confusion — aur usne kabhi tumhe fix karne ki koshish nahi ki. Bas tha. Woh tumhare liye kya tha?',
+    options:['Safety','Burden — kyunki samajhna bhi ek pressure hota hai','Confusing — kyunki itna samajhna feel nahi hota natural','Kuch tha, clearly define nahi kar sakti']
+  },
+  {
+    type:'text',
+    text:'Woh insaan jo samjhta tha — jo bina bole jaanta tha — uske baare mein tum ne kya socha? Uski feelings ke baare mein. Uski presence ke baare mein. Honestly.',
+    placeholder:'Jo kabhi kisi ko nahi bola...'
+  },
+  {
+    type:'single',
+    text:'Agar woh insaan ek din quietly chala jaaye — koi drama nahi, koi explanation nahi, bas na rahe — tumhara pehla honest feeling kya hogi?',
+    options:['Relief','Ek khaali jagah jo fill nahi hogi jaldi','Kuch toot jaayega andar','Pehle kuch nahi, baad mein samjhega']
+  },
+  {
+    type:'single',
+    text:'Kya tumhe lagta hai usne jo diya — time, presence, samajhna — kya tum ne uske barabar kuch diya?',
+    options:['Haan, apne tarike se','Nahi, aur mujhe pata hai','Main de nahi sakti thi us waqt','Honestly nahi pata']
+  },
+  {
+    type:'text',
+    text:'Agar tum use kuch keh sakti — directly, koi consequence nahi, woh sirf sunne ke liye hoga — kya kahogi? Kuch bhi. Likho.',
+    placeholder:'Woh jo hamesha ruka raha...'
+  },
+  // SECTION 8 — Her condition now (Q36-Q38)
+  {
+    type:'single',
+    text:'Aaj tumhari life mein kya hai jo tumhe sabse zyada drain karta hai?',
+    options:['Financial uncertainty','Emotional loneliness','Koi samajhta nahi','Sab kuch ek saath']
+  },
+  {
+    type:'single',
+    text:'Kya tumhe lagta hai tum sahi jagah ho abhi — logon ke saath, situation ke saath?',
+    options:['Haan, mostly','Nahi, par koi option nahi dikh raha','Nahi, aur main change karna chahti hoon','Sochti nahi iske baare mein']
+  },
+  {
+    type:'text',
+    text:'Ek cheez jo tum chahti ho koi samjhe — abhi, is waqt — jo tum ne kisi ko bola nahi. Yahaan likho.',
+    placeholder:'Woh jo andar daba ke rakha hai...'
+  },
+  // SECTION 9 — The real questions (Q39-Q41)
+  {
+    type:'single',
+    text:'Koi jo tumse genuinely connected tha — jo tumhari life mein tha bina label ke — usse tumne door kyun rakha?',
+    options:['Timing nahi thi','Mujhe dar tha kho dene ka','Meri situation allow nahi karti thi','Main nahi jaanti honestly']
+  },
+  {
+    type:'single',
+    text:'Agar woh wapas aaye — same energy, same samajh, par ab koi wait nahi, koi orbit nahi, sirf ek clear sawaal — kya tum ready hogi honestly answer karne ke liye?',
+    options:['Haan','Nahi','Pata nahi','Woh aayega nahi']
+  },
+  // SECTION 10 — His inner world (Q42-Q48)
+  {
+    type:'single',
+    text:'Woh jo tha — jo tumhare saath tha bina kisi label ke — tumhe lagta hai woh khush tha ya kuch carry kar raha tha andar?',
+    options:['Khush lagta tha','Kuch andar tha jo dikhata nahi tha','Dono tha','Maine kabhi seriously observe nahi kiya']
+  },
+  {
+    type:'text',
+    text:'Agar tum uske andar jhank sakti — jo woh feel karta tha par kehta nahi tha — woh kya hoga? Apne words mein likho.',
+    placeholder:'Jo tum feel karti thi uske baare mein...'
+  },
+  {
+    type:'single',
+    text:'Kya tumhe lagta hai woh tumse zyada invest tha is relationship mein — jo bhi tha yeh — tumhari comparison mein?',
+    options:['Haan, clearly','Shayad haan','Barabar tha','Main assess nahi kar sakti']
+  },
+  {
+    type:'single',
+    text:'Uski jo cheez tumhe sabse zyada yaad rahegi — woh kya hai?',
+    options:['Jis tarah woh samjhta tha bina bole','Jis tarah woh tha jab sab chale gaye','Uski honesty jo kabhi kabhi uncomfortable lagti thi','Uska woh side jo usne sirf tumhe dikhaya']
+  },
+  {
+    type:'text',
+    text:'Kuch aisa jo tumne usse kabhi nahi kaha — par kehna chahti thi. Ya shayad abhi bhi chahti ho. Yahaan likho. Koi nahi padh raha abhi.',
+    placeholder:'Woh words jo ruk gaye the...'
+  },
+  {
+    type:'single',
+    text:'Tumhe lagta hai — honestly — ki usne jo time diya, jo presence di, jo samjha — kya woh waste tha uske liye?',
+    options:['Nahi, kuch toh tha','Haan shayad, kyunki main fully nahi thi','Woh jaanta tha risk, usne choose kiya','Yeh sawaal mujhe uncomfortable karta hai']
+  },
+  {
+    type:'text',
+    text:'"Kuch log tumhari zindagi mein aate hain — sikhane ke liye nahi, sirf hone ke liye." Yeh tumhare liye kya hai — real lagta hai ya romantic notion? Aur agar real lagta hai — toh kya woh tha woh insaan?',
+    placeholder:'Jo actually sochti ho...'
+  },
+  // SECTION 11 — Her inner child (Q49-Q53)
+  {
+    type:'text',
+    text:'Bachpan mein tum kya banana chahti thi? Woh dream jo ab shayad tumne kisi ko nahi bataya — ya bataya par khud believe karna band kar diya.',
+    placeholder:'Jo woh chhoti Prachi chahti thi...'
+  },
+  {
+    type:'single',
+    text:'Jab sab kuch theek nahi hota — financially, emotionally, logon ke saath — tum khud ko kaise sambhalti ho?',
+    options:['Kisi ke paas jaati hoon','Akele process karti hoon','Distract karti hoon khud ko','Honestly kuch nahi karti, bas time guzarta hai']
+  },
+  {
+    type:'text',
+    text:'Ek cheez jo tum chahti ho koi insaan tumhare liye kare — sirf ek — jo abhi tak kisi ne nahi kiya. Realistic ya unrealistic, koi bhi.',
+    placeholder:'Woh ek cheez...'
+  },
+  {
+    type:'single',
+    text:'Tum khud ko kaisi insaan maanti ho — honestly, not the version tum logon ko dikhati ho?',
+    options:['Strong, par thaki hui','Confused, par capable','Lost, par dhundhti rehti hoon','Complicated — ek word mein nahi hoga']
+  },
+  {
+    type:'text',
+    text:'Agar tumhari zindagi mein ek cheez tum change kar sakti — sirf ek decision, ek moment — kya hota woh? Aur kyun?',
+    placeholder:'Woh moment...'
+  },
+  // Q53 — THE FINAL ONE (index 52)
+  {
+    type:'text',
+    text:'"Tumhi ho jo mujhe samajhte ho" — yeh tumne kaha tha.\n\nToh phir kya hua?\n\nYahaan likho. Koi sahi ya galat jawab nahi hai. Sirf sach.',
+    placeholder:'Sirf sach...',
+    isFinal: true
+  }
+];
+
+// STATE
+let currentUser = null;
+let currentQ = 0;
+let answers = {}; // { index: { answer, isEscape, timeSpent } }
+let qStartTime = Date.now();
+
+// PARTICLES
+function initParticles() {
+  const wrap = document.getElementById('particles');
+  const emojis = ['🌸','💕','✨','🌷','💗','⭐','🎀','💫'];
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+    p.style.animationDuration = (8 + Math.random() * 10) + 's';
+    p.style.animationDelay = '-' + (Math.random() * 12) + 's';
+    wrap.appendChild(p);
+  }
+}
+
+// SUPABASE HELPERS
+async function supaFetch(path, method, body) {
+  const res = await fetch(SUPABASE_URL + path, {
+    method: method || 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer': method === 'POST' ? 'resolution=merge-duplicates' : ''
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return res.json();
+}
+
+async function upsertUser(email) {
+  await supaFetch('/rest/v1/form_users', 'POST', {
+    email, last_seen: new Date().toISOString()
+  });
+}
+
+async function loadAnswers(email) {
+  const data = await supaFetch(`/rest/v1/form_answers?user_email=eq.${encodeURIComponent(email)}&order=question_index`);
+  if (Array.isArray(data)) {
+    data.forEach(row => {
+      answers[row.question_index] = {
+        answer: row.answer,
+        isEscape: row.is_escape,
+        timeSpent: row.time_spent_seconds
+      };
+    });
+  }
+}
+
+async function saveAnswer(index, answer, isEscape, timeSpent) {
+  await supaFetch('/rest/v1/form_answers', 'POST', {
+    user_email: currentUser,
+    question_index: index,
+    answer: answer,
+    is_escape: isEscape,
+    time_spent_seconds: timeSpent,
+    answered_at: new Date().toISOString()
+  });
+}
+
+async function markComplete(email) {
+  await supaFetch('/rest/v1/form_users?email=eq.' + encodeURIComponent(email), 'PATCH', {
+    completed: true,
+    completed_at: new Date().toISOString()
+  });
+}
+
+// ENTRY
+async function handleEntry() {
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
+  const password = document.getElementById('passwordInput').value.trim();
+  const passkey = document.getElementById('passkeyInput').value.trim();
+  const errEl = document.getElementById('entryError');
+
+  if (!email || !email.includes('@')) { errEl.textContent = 'Sahi Gmail daalo.'; return; }
+  if (password.length < 6) { errEl.textContent = 'Password kam se kam 6 characters ka hona chahiye.'; return; }
+  if (passkey !== PASSKEY) { errEl.textContent = 'Access key galat hai. 🙃'; return; }
+
+  errEl.textContent = 'Checking...';
+  try {
+    await upsertUser(email);
+    currentUser = email;
+    localStorage.setItem('prachi_user', email);
+    localStorage.setItem('prachi_pass', password);
+    await loadAnswers(email);
+    errEl.textContent = '';
+    showScreen('welcomeScreen');
+  } catch(e) {
+    errEl.textContent = 'Kuch error aaya, try karo.';
+  }
+}
+
+function startForm() {
+  // Find last answered question
+  let resumeAt = 0;
+  for (let i = 0; i < TOTAL_Q; i++) {
+    if (answers[i] && answers[i].answer) resumeAt = i;
+  }
+  currentQ = resumeAt;
+  showScreen('questionScreen');
+  renderQuestion(currentQ);
+}
+
+// SCREEN TRANSITIONS
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// MOOD
+function setMood(qIdx) {
+  const mood = getMood(qIdx);
+  document.body.className = mood;
+}
+
+// RENDER QUESTION
+function renderQuestion(idx) {
+  setMood(idx);
+  qStartTime = Date.now();
+  const q = QUESTIONS[idx];
+  const saved = answers[idx];
+
+  document.getElementById('qCounter').textContent = (idx + 1) + ' / ' + TOTAL_Q;
+  document.getElementById('progressFill').style.width = ((idx / TOTAL_Q) * 100) + '%';
+  document.getElementById('backBtn').disabled = idx === 0;
+
+  const content = document.getElementById('qContent');
+  content.style.animation = 'none';
+  content.offsetHeight;
+  content.style.animation = 'qFadeIn 0.5s ease both';
+
+  let html = `<div class="q-text">${q.text.replace(/\n/g,'<br/>')}</div>`;
+
+  if (q.type === 'single') {
+    html += `<div class="options-wrap">`;
+    q.options.forEach((opt, oi) => {
+      const isSelected = saved && saved.answer === opt;
+      html += `<button class="option-btn ${isSelected ? 'selected' : ''}" onclick="selectOption(${idx}, '${opt.replace(/'/g,"\\'")}', this)">${opt}</button>`;
+    });
+    html += `</div>`;
+    html += `<div class="juthi-popup" id="juthiPopup">Juthi Prachi 🙃 sahi bolo — yahaan koi dekh nahi raha</div>`;
+    const showNext = saved && saved.answer && !saved.isEscape;
+    html += `<button class="next-btn ${showNext ? 'visible' : ''}" id="nextBtn" onclick="goNext()">Aage →</button>`;
+  } else {
+    const savedVal = saved ? saved.answer : '';
+    html += `<textarea class="q-textarea" id="textAnswer" placeholder="${q.placeholder}" oninput="onTextInput(${idx})">${savedVal || ''}</textarea>`;
+    const showNext = savedVal && savedVal.trim().length > 3;
+    if (idx === TOTAL_Q - 1) {
+      html += `<button class="submit-btn ${showNext ? '' : ''}" id="submitBtn" onclick="submitForm()" style="display:${showNext ? 'block' : 'none'}">Submit ✦</button>`;
+    } else {
+      html += `<button class="next-btn ${showNext ? 'visible' : ''}" id="nextBtn" onclick="goNext()">Aage →</button>`;
+    }
+  }
+
+  content.innerHTML = html;
+}
+
+// SELECT OPTION
+function selectOption(idx, opt, btnEl) {
+  const isEscape = ESCAPE_PHRASES.some(ep => opt.toLowerCase().includes(ep));
+  const popup = document.getElementById('juthiPopup');
+  const nextBtn = document.getElementById('nextBtn');
+
+  // Deselect all
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+
+  if (isEscape) {
+    popup.classList.add('show');
+    nextBtn.classList.remove('visible');
+    answers[idx] = { answer: opt, isEscape: true, timeSpent: Math.floor((Date.now() - qStartTime) / 1000) };
+    saveAnswer(idx, opt, true, answers[idx].timeSpent);
+  } else {
+    popup.classList.remove('show');
+    nextBtn.classList.add('visible');
+    answers[idx] = { answer: opt, isEscape: false, timeSpent: Math.floor((Date.now() - qStartTime) / 1000) };
+    saveAnswer(idx, opt, false, answers[idx].timeSpent);
+  }
+}
+
+// TEXT INPUT
+let textTimer = null;
+function onTextInput(idx) {
+  const val = document.getElementById('textAnswer').value;
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+
+  if (val.trim().length > 3) {
+    if (nextBtn) nextBtn.classList.add('visible');
+    if (submitBtn) submitBtn.style.display = 'block';
+  } else {
+    if (nextBtn) nextBtn.classList.remove('visible');
+    if (submitBtn) submitBtn.style.display = 'none';
+  }
+
+  clearTimeout(textTimer);
+  textTimer = setTimeout(() => {
+    const timeSpent = Math.floor((Date.now() - qStartTime) / 1000);
+    answers[idx] = { answer: val, isEscape: false, timeSpent };
+    saveAnswer(idx, val, false, timeSpent);
+  }, 800);
+}
+
+// NAVIGATION
+function goNext() {
+  const q = QUESTIONS[currentQ];
+  if (q.type === 'single') {
+    const saved = answers[currentQ];
+    if (!saved || saved.isEscape) return;
+  } else {
+    const val = document.getElementById('textAnswer') ? document.getElementById('textAnswer').value : '';
+    if (val.trim().length < 4) return;
+  }
+  if (currentQ < TOTAL_Q - 1) {
+    currentQ++;
+    renderQuestion(currentQ);
+  }
+}
+
+function goBack() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion(currentQ);
+  }
+}
+
+// SUBMIT
+async function submitForm() {
+  const val = document.getElementById('textAnswer').value;
+  if (val.trim().length < 4) return;
+  const timeSpent = Math.floor((Date.now() - qStartTime) / 1000);
+  answers[currentQ] = { answer: val, isEscape: false, timeSpent };
+  await saveAnswer(currentQ, val, false, timeSpent);
+  await markComplete(currentUser);
+  document.body.className = 'mood-black';
+  showScreen('closingScreen');
+}
+
+// AUTO-LOGIN
+async function tryAutoLogin() {
+  const email = localStorage.getItem('prachi_user');
+  const pass = localStorage.getItem('prachi_pass');
+  if (email && pass) {
+    try {
+      await upsertUser(email);
+      currentUser = email;
+      await loadAnswers(email);
+      document.getElementById('loadingOverlay').style.opacity = '0';
+      setTimeout(() => document.getElementById('loadingOverlay').style.display = 'none', 500);
+      showScreen('welcomeScreen');
+      return;
+    } catch(e) {}
+  }
+  document.getElementById('loadingOverlay').style.opacity = '0';
+  setTimeout(() => document.getElementById('loadingOverlay').style.display = 'none', 500);
+}
+
+// INIT
+initParticles();
+tryAutoLogin();
+</script>
+</body>
+</html>
