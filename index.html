@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draven — draven.in</title>
+<meta name="description" content="Draven — AI tools, Web3 products, published books, and field-verified travel maps. Live products, in-progress builds, and what's for sale.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e14; --panel:#12161f; --panel-2:#171d29; --line:#232b3b; --line-soft:#1a2130;
+    --text:#e8ebf0; --muted:#7c879a; --muted-2:#4c5567;
+    --amber:#e0a83e; --amber-dim:#a97c2a;
+    --steel:#4a7fb0; --steel-light:#8fb3c7;
+    --moss:#4a9b6e; --violet:#8b6fb0; --rust:#c4622d; --teal:#3e8e8e;
+    --live-bg:#4a9b6e22; --pending-bg:#7c879a1c;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(1100px 560px at 14% -8%, #161d2c 0%, transparent 60%),
+      radial-gradient(900px 480px at 100% 0%, #141b28 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{ font-family:'Space Grotesk', sans-serif; color:#f4f5f8; letter-spacing:-0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+  @media(max-width:640px){ .wrap{ padding:0 20px; } }
+  ::selection{ background:var(--amber); color:#0a0e14; }
+
+  /* ---------- NAV ---------- */
+  nav.jumpnav{
+    position:sticky; top:0; z-index:30;
+    background:rgba(10,14,20,0.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .jumpnav-row{ display:flex; align-items:center; gap:2px; overflow-x:auto; scrollbar-width:none; }
+  .jumpnav-row::-webkit-scrollbar{ display:none; }
+  .nav-brand{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; letter-spacing:-.01em;
+    padding:14px 18px 14px 0; flex-shrink:0; white-space:nowrap;
+  }
+  .nav-brand span{ color:var(--amber); }
+  .jumpnav-row a{
+    flex-shrink:0; padding:14px 14px; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
+    border-bottom:2px solid transparent; white-space:nowrap; transition:color .15s ease, border-color .15s ease;
+  }
+  .jumpnav-row a span{ color:var(--muted-2); margin-right:6px; }
+  .jumpnav-row a:hover{ color:var(--text); }
+  .jumpnav-row a.active{ color:var(--amber); border-bottom-color:var(--amber); }
+  .jumpnav-row a.active span{ color:var(--amber); }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative; padding:76px 0 56px; border-bottom:1px solid var(--line); overflow:hidden;
+  }
+  #constellation{ position:absolute; right:-60px; top:-20px; width:520px; max-width:60vw; opacity:.9; pointer-events:none; }
+  .hero-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--amber);
+  }
+  h1.hero-title{ font-size:clamp(38px,6.4vw,68px); font-weight:800; margin-top:14px; line-height:1.0; max-width:11ch; }
+  h1.hero-title em{ font-style:normal; color:var(--steel-light); }
+  .hero-sub{ margin-top:18px; max-width:56ch; color:var(--muted); font-size:15.5px; }
+  .hero-sub b{ color:var(--text); font-weight:600; }
+  .hero-links{ display:flex; gap:10px; flex-wrap:wrap; margin-top:26px; }
+  .hlink{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:9px 14px; border:1px solid var(--line);
+    border-radius:20px; color:var(--muted); transition:all .15s ease;
+  }
+  .hlink:hover{ border-color:var(--amber); color:var(--amber); }
+
+  /* ---------- MANIFEST STRIP ---------- */
+  .manifest{ border-bottom:1px solid var(--line); background:var(--panel); }
+  .manifest-row{ display:grid; grid-template-columns:repeat(4,1fr); }
+  @media(max-width:640px){ .manifest-row{ grid-template-columns:repeat(2,1fr); } }
+  .m-cell{ padding:22px 20px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .m-cell:nth-child(4n){ border-right:none; }
+  @media(max-width:640px){ .m-cell:nth-child(even){ border-right:none; } }
+  .m-num{ font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--amber); }
+  .m-lbl{ margin-top:4px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); }
+
+  /* ---------- DOMAIN SCAFFOLD ---------- */
+  main{ background:var(--bg); }
+  .domain{ padding:76px 0; border-bottom:1px solid var(--line-soft); }
+  .domain:last-of-type{ border-bottom:none; }
+  .domain-head{ display:flex; align-items:flex-start; gap:16px; margin-bottom:38px; max-width:760px; }
+  .d-code{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em;
+    color:#0a0e14; background:var(--dcolor,var(--amber)); padding:4px 9px; border-radius:3px; margin-top:6px; flex-shrink:0;
+  }
+  .domain-head h2{ font-size:clamp(24px,3.2vw,32px); font-weight:700; }
+  .domain-desc{ margin-top:8px; color:var(--muted); font-size:14.5px; line-height:1.6; max-width:64ch; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.on{ opacity:1; transform:none; }
+  @media(prefers-reduced-motion:reduce){ .reveal{ opacity:1; transform:none; transition:none; } html{ scroll-behavior:auto; } }
+
+  /* ---------- PRODUCT CARD (live shipped things) ---------- */
+  .product{
+    display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; background:var(--panel);
+  }
+  @media(max-width:760px){ .product{ grid-template-columns:1fr; } }
+  .product-main{ padding:30px 30px 30px; border-right:1px solid var(--line); }
+  @media(max-width:760px){ .product-main{ border-right:none; border-bottom:1px solid var(--line); } }
+  .product-side{ padding:30px; background:var(--panel-2); }
+  .p-status{ display:inline-flex; align-items:center; gap:7px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; padding:5px 10px; border-radius:20px; }
+  .p-status.live{ color:var(--moss); background:var(--live-bg); }
+  .p-status.progress{ color:var(--steel-light); background:#4a7fb022; }
+  .p-status i{ width:6px; height:6px; border-radius:50%; background:currentColor; display:inline-block; }
+  .p-status.live i{ animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  .product h3{ font-size:22px; font-weight:700; margin-top:14px; }
+  .product .tagline{ color:var(--steel-light); font-size:13.5px; margin-top:4px; font-style:italic; }
+  .product p.desc{ margin-top:14px; color:var(--muted); font-size:14px; line-height:1.65; max-width:52ch; }
+  .product .feat-list{ margin-top:16px; display:flex; flex-direction:column; gap:6px; }
+  .product .feat-list span{ font-size:12.5px; color:var(--text); }
+  .product .feat-list span::before{ content:"—"; color:var(--muted-2); margin-right:7px; }
+  .product-cta{ display:inline-flex; align-items:center; gap:8px; margin-top:20px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--amber); border:1px solid var(--amber-dim); padding:9px 16px; border-radius:6px; transition:all .15s ease; }
+  .product-cta:hover{ background:var(--amber); color:#0a0e14; }
+  .side-lbl{ font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); margin-bottom:6px; }
+  .side-row{ padding:12px 0; border-top:1px solid var(--line); }
+  .side-row:first-of-type{ border-top:none; padding-top:0; }
+  .side-val{ font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:600; color:var(--text); }
+  .side-note{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .role-tag{ display:inline-block; margin-top:16px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--rust); border:1px dashed #c4622d66; padding:4px 9px; border-radius:4px; }
+
+  /* ---------- ENTRY ROWS (books / maps / listings) ---------- */
+  .entry-list{ display:flex; flex-direction:column; }
+  .entry{ display:grid; grid-template-columns:96px 1fr 96px; gap:20px; align-items:start; padding:22px 0; border-top:1px solid var(--line); }
+  .entry:first-child{ border-top:none; }
+  @media(max-width:680px){ .entry{ grid-template-columns:1fr; gap:8px; } .entry .price-col{ text-align:left; } }
+  .entry-tag{ font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 8px; border-radius:3px; width:fit-content; white-space:nowrap; }
+  .tag-draft{ color:var(--muted); border:1px solid var(--line); }
+  .tag-progress{ color:var(--steel-light); background:#4a7fb01f; border:1px solid #4a7fb055; }
+  .tag-open{ color:var(--moss); background:var(--live-bg); border:1px solid #4a9b6e55; }
+  .tag-planned{ color:var(--muted); border:1px dashed var(--line); }
+  .entry-main h4{ font-size:16px; font-weight:600; color:var(--text); }
+  .entry-main .sub{ font-size:12px; color:var(--steel-light); margin-top:2px; font-style:italic; }
+  .entry-main p{ font-size:13.5px; color:var(--muted); margin-top:6px; line-height:1.6; max-width:60ch; }
+  .price-col{ font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--amber); text-align:right; }
+  .price-col small{ display:block; color:var(--muted-2); font-size:10px; margin-top:2px; }
+
+  /* ---------- PLATFORM GRID (network domain) ---------- */
+  .platform-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  @media(max-width:760px){ .platform-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:480px){ .platform-grid{ grid-template-columns:1fr; } }
+  .platform{ background:var(--panel); padding:22px 20px; }
+  .platform .p-name{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; }
+  .platform .p-handle{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--amber); margin-top:3px; }
+  .platform .p-use{ font-size:12.5px; color:var(--muted); margin-top:9px; line-height:1.55; }
+
+  /* ---------- STORE / RATE CARD ---------- */
+  .store{ border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .store-row{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:0; border-top:1px solid var(--line); }
+  .store-row.head{ border-top:none; background:var(--panel-2); }
+  .store-row.head span{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); }
+  .store-row div{ padding:16px 20px; font-size:13.5px; }
+  .store-row:not(.head) div:first-child{ color:var(--text); font-weight:500; }
+  .store-row:not(.head) div{ color:var(--muted); border-left:1px solid var(--line); }
+  .store-row:not(.head) div:first-child{ border-left:none; }
+  @media(max-width:640px){
+    .store-row{ grid-template-columns:1fr; }
+    .store-row div{ border-left:none !important; border-top:1px solid var(--line-soft); padding:10px 18px; }
+    .store-row div:first-child{ border-top:none; padding-top:16px; }
+  }
+  .store-note{ margin-top:22px; padding:18px 20px; border:1px dashed var(--line); border-radius:8px; font-size:13px; color:var(--muted); line-height:1.65; }
+  .store-note b{ color:var(--amber-dim); }
+
+  /* ---------- CATALOG (multi-category listing grid) ---------- */
+  .cat-filters{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .cat-chip{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; padding:7px 14px;
+    border:1px solid var(--line); border-radius:20px; color:var(--muted); cursor:pointer; user-select:none;
+    background:var(--panel); transition:all .15s ease;
+  }
+  .cat-chip:hover{ color:var(--text); border-color:var(--muted-2); }
+  .cat-chip.active{ color:#0a0e14; background:var(--amber); border-color:var(--amber); }
+
+  .catalog-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media(max-width:900px){ .catalog-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:600px){ .catalog-grid{ grid-template-columns:1fr; } }
+
+  .cat-card{
+    border:1px solid var(--line); border-radius:10px; background:var(--panel); padding:20px;
+    display:flex; flex-direction:column; transition:opacity .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .cat-card:hover{ border-color:var(--muted-2); transform:translateY(-2px); }
+  .cat-card.cat-hidden{ display:none; }
+  .cat-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .cat-type{
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:3px 8px; border-radius:3px; color:#0a0e14; background:var(--tcolor,var(--muted));
+  }
+  .cat-price{ font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--amber); white-space:nowrap; }
+  .cat-card h4{ font-size:15.5px; font-weight:600; margin-top:12px; color:var(--text); }
+  .cat-card .cat-plat{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--muted-2); margin-top:3px; }
+  .cat-card p{ font-size:12.5px; color:var(--muted); margin-top:10px; line-height:1.6; flex-grow:1; }
+  .cat-status{ margin-top:14px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted-2); }
+  .cat-status.s-live{ color:var(--moss); }
+  .cat-status.s-example{ color:var(--muted-2); font-style:italic; }
+
+  .catalog-note{ margin-top:24px; padding:16px 18px; border:1px dashed var(--line); border-radius:8px; font-size:12.5px; color:var(--muted-2); line-height:1.6; }
+  .catalog-note b{ color:var(--amber-dim); }
+
+  /* ---------- FOOTER ---------- */
+  footer{ border-top:1px solid var(--line); padding:52px 0 64px; }
+  .foot-top{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; align-items:baseline; }
+  .foot-brand{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; }
+  .foot-brand span{ color:var(--amber); }
+  .foot-meta{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted-2); }
+  .foot-links{ display:flex; gap:16px; flex-wrap:wrap; margin-top:26px; font-family:'IBM Plex Mono',monospace; font-size:12px; }
+  .foot-links a{ color:var(--muted); border-bottom:1px solid transparent; }
+  .foot-links a:hover{ color:var(--amber); border-color:var(--amber); }
+  footer p.note{ margin-top:28px; max-width:64ch; font-size:12.5px; color:var(--muted-2); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<nav class="jumpnav">
+  <div class="wrap" style="display:flex; align-items:center;">
+    <div class="nav-brand">DRA<span>VEN</span></div>
+    <div class="jumpnav-row">
+      <a href="#build"><span>01</span>Build</a>
+      <a href="#trade"><span>02</span>Trade</a>
+      <a href="#author"><span>03</span>Author</a>
+      <a href="#field"><span>04</span>Field</a>
+      <a href="#network"><span>05</span>Network</a>
+      <a href="#advise"><span>06</span>Advise</a>
+      <a href="#store"><span>07</span>Catalog</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <svg id="constellation" viewBox="0 0 520 460" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="#4a7fb0" stroke-width="1" fill="none">
+      <path class="link" d="M260,60 L120,150"/>
+      <path class="link" d="M260,60 L400,150"/>
+      <path class="link" d="M120,150 L90,300"/>
+      <path class="link" d="M400,150 L430,300"/>
+      <path class="link" d="M90,300 L260,400"/>
+      <path class="link" d="M430,300 L260,400"/>
+      <path class="link" d="M260,60 L260,400" stroke-dasharray="2 6" opacity="0.4"/>
+    </g>
+    <g font-family="IBM Plex Mono" font-size="9" fill="#7c879a">
+      <circle class="node" cx="260" cy="60" r="5" fill="#e0a83e"/>
+      <circle class="node" cx="120" cy="150" r="5" fill="#4a9b6e"/>
+      <circle class="node" cx="400" cy="150" r="5" fill="#4a9b6e"/>
+      <circle class="node" cx="90" cy="300" r="5" fill="#8b6fb0"/>
+      <circle class="node" cx="430" cy="300" r="5" fill="#3e8e8e"/>
+      <circle class="node" cx="260" cy="400" r="5" fill="#c4622d"/>
+    </g>
+  </svg>
+
+  <div class="wrap">
+    <span class="hero-eyebrow">draven.in — operator index</span>
+    <h1 class="hero-title">One name. <em>Six domains.</em></h1>
+    <p class="hero-sub">
+      <b>Draven</b> — builder, analyst, author, and cartographer. AI tools shipped in production,
+      a trading product live under <b>TTC</b>, four books in progress, and travel maps field-verified
+      one state at a time. This is the index of all of it.
+    </p>
+    <div class="hero-links">
+      <a class="hlink" href="https://draven-intel.vercel.app/">Draven Intel ↗</a>
+      <a class="hlink" href="https://lokchainpulsefx.vercel.app/">PulseFX ↗</a>
+      <a class="hlink" href="https://www.instagram.com/summ_itind">India 528 ↗</a>
+      <a class="hlink" href="https://topmate.io/sumit_kumar615">Book a consult ↗</a>
+    </div>
+  </div>
+</header>
+
+<div class="manifest">
+  <div class="wrap">
+    <div class="manifest-row">
+      <div class="m-cell"><div class="m-num"><span data-target="2" data-decimals="0">0</span></div><div class="m-lbl">Live products</div></div>
+      <div class="m-cell"><div class="m-num"><span data-target="4" data-decimals="0">0</span></div><div class="m-lbl">Books in progress</div></div>
+      <div class="m-cell"><div class="m-num"><span data-target="36" data-decimals="0">0</span></div><div class="m-lbl">States field-mapped</div></div>
+      <div class="m-cell"><div class="m-num"><span data-target="6" data-decimals="0">0</span></div><div class="m-lbl">Platforms active</div></div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <!-- 01 BUILD -->
+    <section class="domain reveal" id="build" data-domain style="--dcolor:var(--amber)">
+      <div class="domain-head">
+        <span class="d-code">01</span>
+        <div>
+          <h2>Build — AI &amp; developer tools</h2>
+          <p class="domain-desc">Software shipped into production. The evaluation and intelligence layer for how Draven's own crypto/farming decisions get made — now open to others.</p>
+        </div>
+      </div>
+
+      <div class="product">
+        <div class="product-main">
+          <span class="p-status live"><i></i>Live · v5.0</span>
+          <h3>Draven Intel</h3>
+          <div class="tagline">Institutional-grade airdrop &amp; project evaluation, without the hype</div>
+          <p class="desc">A 6-step AI research framework — funding, airdrop status, on-chain and community signals, team/security audit — cross-referenced into a single scored verdict (Working / Watchlist / Avoid), with autonomous monitoring and Telegram tier-change alerts once a project is tracked.</p>
+          <div class="feat-list">
+            <span>15+ live data sources per evaluation (Nansen, DeFi Llama, CertiK, Arkham, Messari…)</span>
+            <span>Powered by Claude, prompt-cached for cost efficiency</span>
+            <span>Proof of Work — every verdict timestamped, accuracy tracked against reported outcomes</span>
+            <span>Farmer Network — referral ranks, ROI calculator</span>
+          </div>
+          <a class="product-cta" href="https://draven-intel.vercel.app/">Open Draven Intel →</a>
+        </div>
+        <div class="product-side">
+          <div class="side-row">
+            <div class="side-lbl">Free tier</div>
+            <div class="side-val">10 evals</div>
+            <div class="side-note">5 tracked projects, full 6-step analysis</div>
+          </div>
+          <div class="side-row">
+            <div class="side-lbl">Paid tier</div>
+            <div class="side-val">from ₹999/mo</div>
+            <div class="side-note">3-month+ plans unlock unlimited evals &amp; tracking</div>
+          </div>
+          <div class="side-row">
+            <div class="side-lbl">Roadmap</div>
+            <div class="side-val mono" style="font-size:13px;">Q2–Q3 2026</div>
+            <div class="side-note">AI farming-signal engine, sybil-risk checker</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 TRADE -->
+    <section class="domain reveal" id="trade" data-domain style="--dcolor:var(--moss)">
+      <div class="domain-head">
+        <span class="d-code">02</span>
+        <div>
+          <h2>Trade — Web3 &amp; trading products</h2>
+          <p class="domain-desc">Chart-reading and market tooling, plus the earlier-stage push into smart contracts and Web3-native tools.</p>
+        </div>
+      </div>
+
+      <div class="product">
+        <div class="product-main">
+          <span class="p-status live"><i></i>Live</span>
+          <h3>PulseFX</h3>
+          <div class="tagline">Read the chart before you trade it</div>
+          <p class="desc">Upload or scan a candlestick chart — PulseFX runs candle extraction, trend/momentum scoring, and support/resistance mapping, then explains the read in plain language with a confidence score and a stake-size suggestion sized to the trader's own capital. Built and delivered under the <b>TTC</b> (The Trading Candle) brand.</p>
+          <div class="feat-list">
+            <span>Quick Scan (1-min charts), Standard Upload, and stacked Multi-Timeframe reads</span>
+            <span>Confidence honestly capped/flagged when the underlying feed is unreliable</span>
+            <span>20 free analyses a day, no card required</span>
+          </div>
+          <a class="product-cta" href="https://lokchainpulsefx.vercel.app/">Open PulseFX →</a>
+        </div>
+        <div class="product-side">
+          <div class="side-row">
+            <div class="side-lbl">Role</div>
+            <div class="side-val" style="font-size:15px;">CTO, TTC</div>
+            <div class="side-note">The Trading Candle — forex/short-timeframe trading community</div>
+          </div>
+          <div class="side-row">
+            <div class="side-lbl">Also building</div>
+            <div class="side-val" style="font-size:15px;">Smart contract &amp; Web3 tools</div>
+            <div class="side-note">Early-stage — no shipped product yet, exploring the deep Web3/blockchain tooling space</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 AUTHOR -->
+    <section class="domain reveal" id="author" data-domain style="--dcolor:var(--violet)">
+      <div class="domain-head">
+        <span class="d-code">03</span>
+        <div>
+          <h2>Author — books &amp; research</h2>
+          <p class="domain-desc">Long-form written work. One label is fully open-source; the rest are traditionally authored under the Draven name.</p>
+        </div>
+      </div>
+
+      <div class="entry-list">
+        <div class="entry">
+          <span class="entry-tag tag-progress">prologue + ch.1 drafted</span>
+          <div class="entry-main">
+            <h4>The Changeover</h4>
+            <div class="sub">"The lie that kept you dependent. The solution that will make you sovereign." — Unspoken Indians</div>
+            <p>How money is created in India and who it's designed to extract from, told through paired days in the life of a Bihar farmer and a Mumbai banker. Fully open-source — no single author credited, free digital edition permanently, print at cost.</p>
+          </div>
+          <div class="price-col">free<small>open-source</small></div>
+        </div>
+
+        <div class="entry">
+          <span class="entry-tag tag-progress">front matter + prologue drafted</span>
+          <div class="entry-main">
+            <h4>The Re-Entry</h4>
+            <div class="sub">How Advertising Learned to Undo Your Decisions</div>
+            <p>Names and maps "Decision Re-Entry Exploitation" — the systematic use of behavioral surveillance to identify a concluded decision and reverse it. 14 chapters across 4 parts, traditionally published under the Draven name, all rights reserved.</p>
+          </div>
+          <div class="price-col">TBD<small>traditional</small></div>
+        </div>
+
+        <div class="entry">
+          <span class="entry-tag tag-progress">chapter 1 drafted</span>
+          <div class="entry-main">
+            <h4>Sovereign Cognition</h4>
+            <div class="sub">A Monograph</div>
+            <p>Opens on "The Verification Monopoly" — why deferring to institutions for truth was a rational adaptation to a substrate access-problem that has since dissolved, and what individual cognition owes the fact that it hasn't caught up.</p>
+          </div>
+          <div class="price-col">TBD<small>monograph</small></div>
+        </div>
+
+        <div class="entry">
+          <span class="entry-tag tag-draft">working draft</span>
+          <div class="entry-main">
+            <h4>Contact Epistemology</h4>
+            <div class="sub">A Mechanism for 0→1 Knowledge Production at the Human-AI Dialectical Boundary — Research Paper</div>
+            <p>Formalizes a mechanism where a human operator and a language model co-produce genuinely novel structural understanding — distinct from retrieval or assisted cognition — with an independent-convergence case study as primary evidence.</p>
+          </div>
+          <div class="price-col">—<small>research</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 FIELD -->
+    <section class="domain reveal" id="field" data-domain style="--dcolor:var(--steel-light)">
+      <div class="domain-head">
+        <span class="d-code">04</span>
+        <div>
+          <h2>Field — maps &amp; cartography</h2>
+          <p class="domain-desc">Route documents and field-verification work across India — one free and open to build credibility, two proposed as paid listings.</p>
+        </div>
+      </div>
+
+      <div class="entry-list">
+        <div class="entry">
+          <span class="entry-tag tag-open">open · in progress</span>
+          <div class="entry-main">
+            <h4>India 528</h4>
+            <div class="sub">Draven's Sovereign Traverse</div>
+            <p>Field-verifying a sequenced route across peaks, heritage, wildlife, and spiritual sites in all 36 states/UTs — physically travelled, not just plotted. Travel starts 2027, targeting completion before 2028. Published free and open under <b>@summ_itind</b> as location-anchored state highlight reels.</p>
+          </div>
+          <div class="price-col">free<small>credibility build</small></div>
+        </div>
+
+        <div class="entry">
+          <span class="entry-tag tag-planned">proposed listing</span>
+          <div class="entry-main">
+            <h4>India by Elevation</h4>
+            <div class="sub">The Draven Way</div>
+            <p>Every state and UT's highest point, ranked and mapped with a realistic month-by-month expedition calendar — permit flags, restricted zones, and the practical route in around each peak. Low-friction entry product.</p>
+          </div>
+          <div class="price-col">$1<small>proposed</small></div>
+        </div>
+
+        <div class="entry">
+          <span class="entry-tag tag-planned">proposed listing</span>
+          <div class="entry-main">
+            <h4>State Explorer Guide</h4>
+            <div class="sub">compiled from the full India 528 field map</div>
+            <p>The complete district-by-district place index — every state, every category (mountain, historical, spiritual, wildlife, modern, adventure) — the expertise-compressed version of the whole traverse, built so you don't miss what's actually worth the detour.</p>
+          </div>
+          <div class="price-col">$5<small>proposed</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 NETWORK -->
+    <section class="domain reveal" id="network" data-domain style="--dcolor:var(--teal)">
+      <div class="domain-head">
+        <span class="d-code">05</span>
+        <div>
+          <h2>Network — content across platforms</h2>
+          <p class="domain-desc">Crypto education, airdrop-farming intelligence, and project updates, split by what each platform is actually good at.</p>
+        </div>
+      </div>
+
+      <div class="platform-grid">
+        <div class="platform">
+          <div class="p-name">YouTube</div>
+          <div class="p-handle">@thepiphunter0 · @thetradingcandle30</div>
+          <div class="p-use">Crypto education and TTC trading-discipline content.</div>
+        </div>
+        <div class="platform">
+          <div class="p-name">Telegram</div>
+          <div class="p-handle">@dravencrypto1 · Intel bot</div>
+          <div class="p-use">Airdrop farming, investing, and mapping — plus automated tier-change alerts from Draven Intel.</div>
+        </div>
+        <div class="platform">
+          <div class="p-name">X / Twitter</div>
+          <div class="p-handle">@Draven683720</div>
+          <div class="p-use">Standing updates on whatever's shipping.</div>
+        </div>
+        <div class="platform">
+          <div class="p-name">Farcaster</div>
+          <div class="p-handle">—</div>
+          <div class="p-use">On-chain-native updates alongside X.</div>
+        </div>
+        <div class="platform">
+          <div class="p-name">Instagram</div>
+          <div class="p-handle">@draven_crypto · @summ_itind</div>
+          <div class="p-use">Short crypto recaps, and the India 528 expedition reels.</div>
+        </div>
+        <div class="platform">
+          <div class="p-name">Medium</div>
+          <div class="p-handle">—</div>
+          <div class="p-use">Roadmaps and whitepapers for personal projects, long-form.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 ADVISE -->
+    <section class="domain reveal" id="advise" data-domain style="--dcolor:var(--rust)">
+      <div class="domain-head">
+        <span class="d-code">06</span>
+        <div>
+          <h2>Advise — CTO &amp; consulting</h2>
+          <p class="domain-desc">Where the builder and analyst work turns into direct advisory.</p>
+        </div>
+      </div>
+      <div class="entry-list">
+        <div class="entry">
+          <span class="entry-tag tag-open">active</span>
+          <div class="entry-main">
+            <h4>CTO — TTC (The Trading Candle)</h4>
+            <p>Technical leadership for TTC's forex/trading-education community — PulseFX is TTC's flagship tool, built and shipped under this role.</p>
+          </div>
+          <div class="price-col">role<small>ongoing</small></div>
+        </div>
+        <div class="entry">
+          <span class="entry-tag tag-open">bookable</span>
+          <div class="entry-main">
+            <h4>1:1 Consulting</h4>
+            <p>Direct sessions via Topmate — crypto/airdrop strategy, Web3 build advice, or working through the Draven Intel framework on a specific project.</p>
+          </div>
+          <div class="price-col"><a href="https://topmate.io/sumit_kumar615" style="color:var(--amber);">book →</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 CATALOG -->
+    <section class="domain reveal" id="store" data-domain style="--dcolor:var(--amber)">
+      <div class="domain-head">
+        <span class="d-code">07</span>
+        <div>
+          <h2>Catalog — every listing, every category</h2>
+          <p class="domain-desc">
+            Layout preview — this is what the shelf looks like once books, guides, courses, articles,
+            and paid social tiers all sit side by side. Most cards below are placeholder examples marked
+            <i>preview</i> so you can see the shape of a full catalog; swap them for real listings whenever.
+          </p>
+        </div>
+      </div>
+
+      <div class="cat-filters">
+        <span class="cat-chip active" data-filter="all">All</span>
+        <span class="cat-chip" data-filter="book">Book</span>
+        <span class="cat-chip" data-filter="ebook">Ebook</span>
+        <span class="cat-chip" data-filter="guide">eGuide</span>
+        <span class="cat-chip" data-filter="article">Article</span>
+        <span class="cat-chip" data-filter="course">Course</span>
+        <span class="cat-chip" data-filter="social">Social</span>
+        <span class="cat-chip" data-filter="tool">Tool</span>
+      </div>
+
+      <div class="catalog-grid">
+
+        <div class="cat-card" data-cats="book">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--violet)">Book</span><span class="cat-price">Free</span></div>
+          <h4>The Changeover</h4>
+          <div class="cat-plat">Unspoken Indians · open-source</div>
+          <p>How Indian money creation extracts from people like Ramu, told against a Mumbai banker's same Tuesday.</p>
+          <div class="cat-status s-live">real · in progress</div>
+        </div>
+
+        <div class="cat-card" data-cats="book">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--violet)">Book</span><span class="cat-price">TBD</span></div>
+          <h4>The Re-Entry</h4>
+          <div class="cat-plat">Draven · traditional</div>
+          <p>How advertising learned to undo decisions you already made — names "Decision Re-Entry Exploitation."</p>
+          <div class="cat-status s-live">real · in progress</div>
+        </div>
+
+        <div class="cat-card" data-cats="guide">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--steel-light)">eGuide</span><span class="cat-price">$5</span></div>
+          <h4>State Explorer Guide</h4>
+          <div class="cat-plat">Field · compiled from India 528</div>
+          <p>Full district-by-district place index across all 36 states/UTs — the compressed, expert version of the traverse.</p>
+          <div class="cat-status s-live">real · proposed price</div>
+        </div>
+
+        <div class="cat-card" data-cats="guide">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--steel-light)">eGuide</span><span class="cat-price">$1</span></div>
+          <h4>India by Elevation</h4>
+          <div class="cat-plat">Field · The Draven Way</div>
+          <p>Every state and UT's highest point, ranked, with a month-by-month expedition calendar and permit flags.</p>
+          <div class="cat-status s-live">real · proposed price</div>
+        </div>
+
+        <div class="cat-card" data-cats="tool">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--amber)">Tool</span><span class="cat-price">from ₹999/mo</span></div>
+          <h4>Draven Intel</h4>
+          <div class="cat-plat">Build · live v5.0</div>
+          <p>6-step AI airdrop evaluation engine — funding, on-chain, community, and security signals into one verdict.</p>
+          <div class="cat-status s-live">real · live</div>
+        </div>
+
+        <div class="cat-card" data-cats="tool">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--amber)">Tool</span><span class="cat-price">Free / premium</span></div>
+          <h4>PulseFX</h4>
+          <div class="cat-plat">Trade · TTC</div>
+          <p>Upload a candlestick chart, get a plain-language trend/momentum read with a confidence score.</p>
+          <div class="cat-status s-live">real · live</div>
+        </div>
+
+        <div class="cat-card" data-cats="ebook">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--rust)">Ebook</span><span class="cat-price">$3</span></div>
+          <h4>Airdrop Farming 101</h4>
+          <div class="cat-plat">Network · placeholder</div>
+          <p>Short-form primer on sybil-safe multi-wallet farming — pairs with the Draven Intel scoring framework.</p>
+          <div class="cat-status s-example">preview — swap for real title</div>
+        </div>
+
+        <div class="cat-card" data-cats="ebook">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--rust)">Ebook</span><span class="cat-price">$4</span></div>
+          <h4>The Sybil Playbook</h4>
+          <div class="cat-plat">Network · placeholder</div>
+          <p>How projects actually detect farmers, and what changes when you assume you're being watched.</p>
+          <div class="cat-status s-example">preview — swap for real title</div>
+        </div>
+
+        <div class="cat-card" data-cats="course">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--moss)">Course</span><span class="cat-price">$15</span></div>
+          <h4>Airdrop Farming Masterclass</h4>
+          <div class="cat-plat">Network · video + PDF, placeholder</div>
+          <p>Multi-wallet setup, project vetting with Draven Intel, and a claim-season checklist, in one course.</p>
+          <div class="cat-status s-example">preview — swap for real course</div>
+        </div>
+
+        <div class="cat-card" data-cats="course">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--moss)">Course</span><span class="cat-price">$9</span></div>
+          <h4>Chart Reading with PulseFX</h4>
+          <div class="cat-plat">Trade · placeholder</div>
+          <p>Short course pairing manual chart-reading fundamentals with how to interpret a PulseFX confidence score.</p>
+          <div class="cat-status s-example">preview — swap for real course</div>
+        </div>
+
+        <div class="cat-card" data-cats="article">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--teal)">Article</span><span class="cat-price">Free</span></div>
+          <h4>Reading a Candlestick in 60 Seconds</h4>
+          <div class="cat-plat">Medium · placeholder</div>
+          <p>Single long-form piece — the shortest honest explanation of what a candle is actually telling you.</p>
+          <div class="cat-status s-example">preview — swap for real article</div>
+        </div>
+
+        <div class="cat-card" data-cats="article">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--teal)">Article</span><span class="cat-price">Free</span></div>
+          <h4>India 528 — Roadmap &amp; Whitepaper</h4>
+          <div class="cat-plat">Medium · placeholder</div>
+          <p>The full traverse plan written up long-form — sequencing logic, permits, and the 2027–28 timeline.</p>
+          <div class="cat-status s-example">preview — swap for real article</div>
+        </div>
+
+        <div class="cat-card" data-cats="social">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--steel)">Social</span><span class="cat-price">Free</span></div>
+          <h4>Telegram — Draven Crypto</h4>
+          <div class="cat-plat">@dravencrypto1</div>
+          <p>Open community feed — airdrop farming, investing, and mapping updates.</p>
+          <div class="cat-status s-live">real · live</div>
+        </div>
+
+        <div class="cat-card" data-cats="social">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--steel)">Social</span><span class="cat-price">paid tier</span></div>
+          <h4>Telegram — VIP Signals</h4>
+          <div class="cat-plat">placeholder</div>
+          <p>Gated group for early project calls and tier-change alerts ahead of the public feed.</p>
+          <div class="cat-status s-example">preview — swap for real tier</div>
+        </div>
+
+        <div class="cat-card" data-cats="social">
+          <div class="cat-top"><span class="cat-type" style="--tcolor:var(--steel)">Social</span><span class="cat-price">paid tier</span></div>
+          <h4>YouTube Membership</h4>
+          <div class="cat-plat">@thepiphunter0 · placeholder</div>
+          <p>Member-only breakdowns and early access to airdrop evaluations before they hit Telegram.</p>
+          <div class="cat-status s-example">preview — swap for real tier</div>
+        </div>
+
+      </div>
+
+      <div class="catalog-note">
+        <b>On the Peaks vs. State Guide bundle question —</b> keep them separate rather than bundled.
+        The $1 India by Elevation is an impulse-buy trust-builder off the free India 528 map; the $5 State
+        Explorer Guide is the real depth product. Bundling flattens that funnel — sell both standalone, then
+        offer an upsell ("already own Elevation? get the Guide for $4.50") to people who've already bought once,
+        not a discount to someone who hasn't seen either yet.
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">DRA<span>VEN</span> · draven.in</div>
+      <div class="foot-meta">v0.1 — <span id="year">2026</span></div>
+    </div>
+    <div class="foot-links">
+      <a href="https://draven-intel.vercel.app/">Draven Intel</a>
+      <a href="https://lokchainpulsefx.vercel.app/">PulseFX</a>
+      <a href="https://www.instagram.com/draven_crypto">Instagram</a>
+      <a href="https://x.com/Draven683720">X</a>
+      <a href="https://t.me/dravencrypto1">Telegram</a>
+      <a href="https://topmate.io/sumit_kumar615">Consulting</a>
+    </div>
+    <p class="note">
+      Scaffold v0.1 — pricing on India by Elevation and the State Explorer Guide is proposed, not live.
+      The Re-Entry, Sovereign Cognition, and Contact Epistemology are all in progress; statuses here will move
+      as chapters land. Tell me what to correct, add, or reprice and I'll update the index.
+    </p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+function countUp(el) {
+    const target = parseFloat(el.dataset.target || "0");
+    const decimals = parseInt(el.dataset.decimals || "0", 10);
+    const duration = 1200;
+    const start = performance.now();
+    function tick(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = target * eased;
+        el.textContent = val.toFixed(decimals);
+        if (p < 1)
+            requestAnimationFrame(tick);
+        else
+            el.textContent = target.toFixed(decimals);
+    }
+    requestAnimationFrame(tick);
+}
+function initCounters() {
+    const counters = Array.from(document.querySelectorAll("[data-target]"));
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                countUp(entry.target);
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.6 });
+    counters.forEach((c) => io.observe(c));
+}
+function initReveal() {
+    const els = Array.from(document.querySelectorAll(".reveal"));
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("on");
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    els.forEach((el) => io.observe(el));
+}
+function initScrollSpy() {
+    const sections = Array.from(document.querySelectorAll("main [data-domain]"));
+    const links = Array.from(document.querySelectorAll(".jumpnav a"));
+    const linkFor = new Map();
+    links.forEach((l) => {
+        const id = (l.getAttribute("href") || "").replace("#", "");
+        linkFor.set(id, l);
+    });
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const id = entry.target.id;
+            const link = linkFor.get(id);
+            if (!link)
+                return;
+            if (entry.isIntersecting) {
+                links.forEach((l) => l.classList.remove("active"));
+                link.classList.add("active");
+            }
+        });
+    }, { threshold: 0.3, rootMargin: "-15% 0px -55% 0px" });
+    sections.forEach((s) => io.observe(s));
+}
+function initConstellation() {
+    const svg = document.getElementById("constellation");
+    if (!svg)
+        return;
+    const paths = Array.from(svg.querySelectorAll("path.link"));
+    paths.forEach((p, i) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = String(len);
+        p.style.strokeDashoffset = String(len);
+        p.style.transition = "stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1) " + (0.12 * i) + "s";
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => { p.style.strokeDashoffset = "0"; });
+        });
+    });
+    const nodes = Array.from(svg.querySelectorAll(".node"));
+    nodes.forEach((n, i) => {
+        n.style.opacity = "0";
+        n.style.transition = "opacity .5s ease " + (0.12 * i + 0.35) + "s";
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => { n.style.opacity = "1"; });
+        });
+    });
+}
+function initCatalogFilter() {
+    const chips = Array.from(document.querySelectorAll(".cat-chip"));
+    const cards = Array.from(document.querySelectorAll(".cat-card"));
+    if (!chips.length)
+        return;
+    function applyFilter(active) {
+        cards.forEach((card) => {
+            const cats = (card.dataset.cats || "").split(",");
+            const show = active === "all" || cats.includes(active);
+            card.classList.toggle("cat-hidden", !show);
+        });
+    }
+    chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+            chips.forEach((c) => c.classList.remove("active"));
+            chip.classList.add("active");
+            applyFilter(chip.dataset.filter || "all");
+        });
+    });
+}
+document.addEventListener("DOMContentLoaded", () => {
+    const yearEl = document.getElementById("year");
+    if (yearEl)
+        yearEl.textContent = String(new Date().getFullYear());
+    initCounters();
+    initReveal();
+    initScrollSpy();
+    initConstellation();
+    initCatalogFilter();
+});
+</script>
+</body>
+</html>
