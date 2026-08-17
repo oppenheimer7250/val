@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draven — Decentralized Epistemologist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#030805; --panel:#06110c; --line:#123322; --line-bright:#1e5c3d;
+    --text:#d8f0e2; --muted:#5f8a72; --muted-2:#3a5c48;
+    --green:#3ddc84; --green-dim:#1f7a4a; --cyan:#5de2c4; --gold:#e0c068;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg); color:var(--text); font-family:'IBM Plex Mono', monospace;
+    line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+  @media(max-width:640px){ .wrap{ padding:0 20px; } }
+  ::selection{ background:var(--green); color:#030805; }
+
+  #rain{ position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:.55; pointer-events:none; }
+
+  @media(hover:hover) and (pointer:fine){
+    body{ cursor:none; }
+    #cursor-triangle{ position:fixed; top:0; left:0; pointer-events:none; z-index:999; transform:translate(-50%,-50%); transition:transform .12s ease; }
+    #cursor-triangle svg{ display:block; overflow:visible; }
+    #cursor-triangle .tri-fill{ opacity:1; transition:opacity .12s ease; }
+    #cursor-triangle .tri-hollow{ opacity:0; transition:opacity .12s ease; }
+    #cursor-triangle.hovering .tri-fill{ opacity:0; }
+    #cursor-triangle.hovering .tri-hollow{ opacity:1; }
+    #cursor-triangle.hovering{ transform:translate(-50%,-50%) scale(1.5); }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{ position:relative; padding:120px 0 70px; text-align:center; }
+
+  h1.title{
+    font-family:'Cinzel', serif; font-weight:800; font-size:clamp(46px,8vw,96px);
+    letter-spacing:.02em; line-height:1.05;
+    background:linear-gradient(100deg, var(--cyan), var(--green), var(--cyan));
+    background-size:220% auto;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:gradientShift 6s ease-in-out infinite;
+    text-shadow:0 0 40px rgba(61,220,132,.25);
+  }
+  @keyframes gradientShift{ 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+
+  h2.subtitle{
+    font-family:'Cinzel', serif; font-weight:700; font-size:clamp(28px,5vw,54px);
+    letter-spacing:.06em; color:var(--green); margin-top:6px;
+    animation:glitch 3.4s infinite;
+    text-shadow:0 0 24px rgba(61,220,132,.5);
+  }
+  @keyframes glitch{
+    0%,92%,100%{ transform:translate(0,0); text-shadow:0 0 24px rgba(61,220,132,.5); }
+    93%{ transform:translate(-2px,1px); text-shadow:2px 0 var(--cyan), -2px 0 #ff4d6d; }
+    94%{ transform:translate(2px,-1px); text-shadow:-2px 0 var(--cyan), 2px 0 #ff4d6d; }
+    95%{ transform:translate(-1px,0); text-shadow:1px 0 var(--cyan), -1px 0 #ff4d6d; }
+    96%{ transform:translate(0,0); }
+  }
+
+  #motto{
+    display:inline-block; margin-top:30px; font-family:'IBM Plex Mono',monospace; font-weight:600;
+    font-size:15px; letter-spacing:.14em; color:var(--muted); cursor:default; transition:opacity .35s ease, color .3s ease;
+    border-bottom:1px dotted var(--line-bright); padding-bottom:6px;
+  }
+  #motto.translated{ color:var(--gold); }
+
+  .socials{ display:flex; justify-content:center; gap:34px; flex-wrap:wrap; margin-top:44px; }
+  .socials a{ font-size:12px; letter-spacing:.14em; color:var(--muted); transition:color .2s ease; }
+  .socials a:hover{ color:var(--green); }
+
+  .divider{ margin:52px auto 0; max-width:640px; opacity:.5; }
+
+  .section-flourish{
+    text-align:center; font-size:13px; letter-spacing:.2em; color:var(--green-dim); margin:70px 0 40px;
+    font-weight:600;
+  }
+  .section-flourish b{ color:var(--green); font-weight:700; }
+
+  /* ---------- PROJECT / BOOK GRID ---------- */
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding-bottom:20px; }
+  @media(max-width:900px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:600px){ .grid{ grid-template-columns:1fr; } }
+
+  .p-card{
+    border:1px solid var(--line); border-radius:6px; padding:30px 26px; background:var(--panel);
+    display:flex; flex-direction:column; min-height:190px; position:relative; transition:border-color .25s ease, box-shadow .25s ease, transform .2s ease;
+  }
+  .p-card:hover{ border-color:var(--green); box-shadow:0 0 30px -6px rgba(61,220,132,.35); transform:translateY(-2px); }
+  .p-card .arrow{ position:absolute; top:24px; right:24px; color:var(--muted-2); font-size:14px; }
+  .p-card .p-tag{ font-size:10px; letter-spacing:.1em; color:var(--muted-2); margin-bottom:14px; }
+  .p-card h3{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; letter-spacing:.02em;
+    color:var(--green); text-shadow:0 0 14px rgba(61,220,132,.35);
+  }
+  .p-card .p-sub{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14.5px; color:var(--text); margin-top:8px; }
+  .p-card p.p-desc{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin-top:12px; line-height:1.65; flex-grow:1; }
+  .p-card .p-plat{ margin-top:14px; font-size:10px; letter-spacing:.05em; color:var(--cyan); }
+
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease; }
+  .reveal.on{ opacity:1; transform:none; }
+  @media(prefers-reduced-motion:reduce){ .reveal{ opacity:1; transform:none; } html{ scroll-behavior:auto; } }
+
+  /* ---------- FUN FACTS ---------- */
+  .facts-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+  @media(max-width:700px){ .facts-grid{ grid-template-columns:1fr; } }
+  .fact-card{ border:1px solid var(--line); border-radius:6px; padding:26px; background:var(--panel); }
+  .fact-mark{ color:var(--green); font-size:18px; }
+  .fact-card p{ margin-top:14px; font-size:12.5px; color:var(--muted); line-height:1.7; }
+
+  /* ---------- PLACEHOLDER (testimonials / articles / media) ---------- */
+  .slot-card{
+    border:1px dashed var(--line); border-radius:6px; padding:30px; text-align:center;
+    color:var(--muted-2); font-size:11.5px; letter-spacing:.06em;
+  }
+
+  /* ---------- AUTO-SCROLL MARQUEE ---------- */
+  .marquee-wrap{ overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:26px 0; margin:70px 0; }
+  .marquee-track{ display:flex; gap:22px; width:max-content; animation:scrollX 38s linear infinite; }
+  .marquee-wrap:hover .marquee-track{ animation-play-state:paused; }
+  .m-item{
+    flex:0 0 auto; width:280px; border:1px solid var(--line); border-radius:6px; padding:20px;
+    background:var(--panel); transition:border-color .2s ease;
+  }
+  .m-item:hover{ border-color:var(--green); }
+  .m-item .m-tag{ font-size:9.5px; letter-spacing:.08em; color:var(--muted-2); }
+  .m-item .m-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--green); font-size:15px; margin-top:8px; }
+  .m-item .m-desc{ font-size:11px; color:var(--muted); margin-top:8px; line-height:1.55; }
+  .m-item .m-cta{ display:inline-block; margin-top:14px; font-size:10px; letter-spacing:.06em; color:var(--cyan); border-bottom:1px dotted var(--cyan); }
+  .m-item .m-cta.pay::before{ content:"₹/$ "; }
+  @keyframes scrollX{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  @media(prefers-reduced-motion:reduce){ .marquee-track{ animation:none; } }
+  footer{ margin-top:90px; padding:50px 0 60px; border-top:1px solid var(--line); text-align:center; }
+  footer .f-title{ font-family:'Cinzel',serif; font-weight:700; font-size:22px; color:var(--green); }
+  footer .f-motto{ margin-top:8px; font-size:11px; letter-spacing:.14em; color:var(--muted-2); }
+  footer .socials{ margin-top:30px; }
+  footer .f-bottom{ margin-top:40px; font-size:10px; letter-spacing:.1em; color:var(--muted-2); opacity:.6; }
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<div id="cursor-triangle">
+  <svg width="26" height="26" viewBox="0 0 26 26">
+    <polygon class="tri-fill" points="13,3 22,21 4,21" fill="#eef7ee"/>
+    <polygon class="tri-hollow" points="13,1 24,23 2,23" fill="none" stroke="#eef7ee" stroke-width="1.6"/>
+  </svg>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <h1 class="title">DRAVEN THE DECENTRALIZED</h1>
+    <h2 class="subtitle">EPISTEMOLOGIST</h2>
+    <div id="motto">FORTES FORTVNA IVVAT _</div>
+
+    <div class="socials">
+      <a href="https://x.com/Draven683720">X</a>
+      <a href="https://t.me/dravencrypto1">TELEGRAM</a>
+      <a href="https://www.instagram.com/draven_crypto">INSTAGRAM</a>
+      <a href="https://www.youtube.com/@thepiphunter0">YOUTUBE</a>
+      <a href="#internet">FARCASTER</a>
+      <a href="https://topmate.io/sumit_kumar615">TOPMATE</a>
+    </div>
+
+    <svg class="divider" viewBox="0 0 640 40" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,20 Q80,0 160,20 T320,20 T480,20 T640,20" fill="none" stroke="#1e5c3d" stroke-width="1"/>
+      <circle cx="160" cy="20" r="2.5" fill="#3ddc84"/>
+      <circle cx="320" cy="20" r="2.5" fill="#3ddc84"/>
+      <circle cx="480" cy="20" r="2.5" fill="#3ddc84"/>
+    </svg>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="section-flourish reveal">&lt;-•-•◇•-•-( <b>PROJECTS</b> )-•-•◇•-•-&gt;</div>
+  <div class="grid reveal">
+    <a class="p-card" href="https://draven-intel.vercel.app/">
+      <span class="arrow">→</span>
+      <div class="p-tag">TOOL · LIVE V5</div>
+      <h3>DRAVEN INTEL</h3>
+      <div class="p-sub">Airdrop Intelligence System (AIS)</div>
+      <p class="p-desc">A 6-step AI framework that eliminates ~90% of the manual research and tracking work airdrop farmers carry — no more guessing whether a project allocates or delivers.</p>
+      <div class="p-plat">{ platform: web app }</div>
+    </a>
+
+    <a class="p-card" href="https://lokchainpulsefx.vercel.app/">
+      <span class="arrow">→</span>
+      <div class="p-tag">TOOL · LIVE</div>
+      <h3>PULSEFX</h3>
+      <div class="p-sub">Binary & short-timeframe trading engine</div>
+      <p class="p-desc">Reads a chart the way a trader would — trend, momentum, support/resistance — built for fast binary-option and short-timeframe decisions.</p>
+      <div class="p-plat">{ platform: TTC }</div>
+    </a>
+
+    <a class="p-card" href="https://www.instagram.com/summ_itind">
+      <span class="arrow">→</span>
+      <div class="p-tag">EXPEDITION · IN PROGRESS</div>
+      <h3>INDIA 528</h3>
+      <div class="p-sub">One-year traverse, field-verified</div>
+      <p class="p-desc">Free to follow — walk India with Draven. A route across every peak, heritage, and wildlife site in the country, documented state by state.</p>
+      <div class="p-plat">{ platform: Instagram / GitHub }</div>
+    </a>
+
+    <a class="p-card" href="#">
+      <span class="arrow">→</span>
+      <div class="p-tag">EGUIDE · $5 PROPOSED</div>
+      <h3>STATE EXPLORER GUIDE</h3>
+      <div class="p-sub">Compiled field guide</div>
+      <p class="p-desc">The full district-by-district map compressed into one guide — every category, every state, the expertise-compressed version of the traverse.</p>
+      <div class="p-plat">{ platform: guide }</div>
+    </a>
+
+    <a class="p-card" href="#">
+      <span class="arrow">→</span>
+      <div class="p-tag">EGUIDE · $1 PROPOSED</div>
+      <h3>INDIA BY ELEVATION</h3>
+      <div class="p-sub">Every summit, ranked</div>
+      <p class="p-desc">Every state and UT's highest point mapped with a realistic month-by-month expedition calendar and permit flags.</p>
+      <div class="p-plat">{ platform: guide }</div>
+    </a>
+
+    <a class="p-card" href="https://t.me/dravencrypto1">
+      <span class="arrow">→</span>
+      <div class="p-tag">COMMUNITY · LIVE</div>
+      <h3>DRAVEN CRYPTO</h3>
+      <div class="p-sub">Airdrop farming & mapping</div>
+      <p class="p-desc">Open feed for airdrop farming, investing, and project mapping — plus tier-change alerts from Draven Intel.</p>
+      <div class="p-plat">{ platform: Telegram }</div>
+    </a>
+  </div>
+
+  <div class="section-flourish reveal">&lt;-•-•◇•-•-( <b>ALL PRODUCTS & SERVICES</b> )-•-•◇•-•-&gt;</div>
+  <div class="marquee-wrap reveal">
+    <div class="marquee-track" id="marquee-track">
+      <a class="m-item" href="https://draven-intel.vercel.app/">
+        <div class="m-tag">TOOL · SUBSCRIPTION</div>
+        <div class="m-name">DRAVEN INTEL</div>
+        <div class="m-desc">6-step airdrop evaluation engine. Free tier, then ₹999+/mo.</div>
+        <span class="m-cta">Open app →</span>
+      </a>
+      <a class="m-item" href="https://lokchainpulsefx.vercel.app/">
+        <div class="m-tag">TOOL · FREEMIUM</div>
+        <div class="m-name">PULSEFX</div>
+        <div class="m-desc">Chart-reading engine for binary/short-timeframe trades.</div>
+        <span class="m-cta">Open app →</span>
+      </a>
+      <a class="m-item" href="#" data-payment-provider="razorpay" data-payment-link="REPLACE_WITH_RAZORPAY_LINK">
+        <div class="m-tag">EGUIDE · ₹399</div>
+        <div class="m-name">STATE EXPLORER GUIDE</div>
+        <div class="m-desc">Full district-by-district field guide, all 36 states/UTs.</div>
+        <span class="m-cta pay">Get it now →</span>
+      </a>
+      <a class="m-item" href="#" data-payment-provider="razorpay" data-payment-link="REPLACE_WITH_RAZORPAY_LINK">
+        <div class="m-tag">EGUIDE · ₹79</div>
+        <div class="m-name">INDIA BY ELEVATION</div>
+        <div class="m-desc">Every summit ranked, with a real expedition calendar.</div>
+        <span class="m-cta pay">Get it now →</span>
+      </a>
+      <a class="m-item" href="https://www.instagram.com/summ_itind">
+        <div class="m-tag">EXPEDITION · FREE</div>
+        <div class="m-name">INDIA 528</div>
+        <div class="m-desc">Follow the year-long traverse — free, on Instagram.</div>
+        <span class="m-cta">Follow along →</span>
+      </a>
+      <a class="m-item" href="https://t.me/dravencrypto1">
+        <div class="m-tag">COMMUNITY · FREE</div>
+        <div class="m-name">DRAVEN CRYPTO</div>
+        <div class="m-desc">Airdrop farming & mapping, open Telegram feed.</div>
+        <span class="m-cta">Join →</span>
+      </a>
+      <a class="m-item" href="https://topmate.io/sumit_kumar615">
+        <div class="m-tag">SERVICE · BOOKABLE</div>
+        <div class="m-name">1:1 CONSULTING</div>
+        <div class="m-desc">Crypto/airdrop strategy or Web3 build advice, direct.</div>
+        <span class="m-cta pay">Book a slot →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="section-flourish reveal">&lt;-•-•◇•-•-( <b>BOOKS</b> )-•-•◇•-•-&gt;</div>
+  <div class="grid reveal">
+    <div class="p-card">
+      <div class="p-tag">BOOK · OPEN-SOURCE</div>
+      <h3>THE CHANGEOVER</h3>
+      <div class="p-sub">Unspoken Indians</div>
+      <p class="p-desc">How money is created in India and who it's designed to extract from — no single credited author, free digital edition permanently.</p>
+      <div class="p-plat">{ price: free }</div>
+    </div>
+    <div class="p-card">
+      <div class="p-tag">BOOK · TRADITIONAL</div>
+      <h3>THE RE-ENTRY</h3>
+      <div class="p-sub">How Advertising Learned to Undo Your Decisions</div>
+      <p class="p-desc">Names "Decision Re-Entry Exploitation" — the systematic use of behavioral surveillance to reverse a decision you already made.</p>
+      <div class="p-plat">{ price: TBD }</div>
+    </div>
+    <div class="p-card">
+      <div class="p-tag">MONOGRAPH</div>
+      <h3>SOVEREIGN COGNITION</h3>
+      <div class="p-sub">The Verification Monopoly</div>
+      <p class="p-desc">Why deferring to institutions for truth was a rational adaptation to a substrate access-problem that has since dissolved.</p>
+      <div class="p-plat">{ price: TBD }</div>
+    </div>
+    <div class="p-card">
+      <div class="p-tag">RESEARCH PAPER · DRAFT</div>
+      <h3>CONTACT EPISTEMOLOGY</h3>
+      <div class="p-sub">Human/AI co-produced knowledge</div>
+      <p class="p-desc">Formalizes a mechanism where a human operator and a language model co-produce genuinely novel structural understanding.</p>
+      <div class="p-plat">{ price: — }</div>
+    </div>
+  </div>
+
+  <div class="section-flourish reveal">&lt;-•-•◇•-•-( <b>ARTICLES</b> )-•-•◇•-•-&gt;</div>
+  <div class="grid reveal">
+    <a class="p-card" href="articles/the-mask-that-outlasted-the-empire.html">
+      <span class="arrow">→</span>
+      <div class="p-tag">ARTICLE · FREE · READ IN BROWSER</div>
+      <h3>THE MASK THAT OUTLASTED THE EMPIRE</h3>
+      <div class="p-sub">A structural account</div>
+      <p class="p-desc">How outrage gets filed, absorbed, and reissued as proof the system works — and how a flag changed in 1947 while the chain underneath it did not.</p>
+      <div class="p-plat">{ format: html, own page }</div>
+    </a>
+    <div class="slot-card">ARTICLE SLOT — AWAITING NEXT PIECE</div>
+    <div class="slot-card">ARTICLE SLOT — AWAITING NEXT PIECE</div>
+  </div>
+
+  <div class="section-flourish reveal">&lt;-•-•◇•-•-( <b>TESTIMONIALS</b> )-•-•◇•-•-&gt;</div>
+  <div class="grid reveal">
+    <div class="slot-card">RESERVED — FIRST REVIEW NOT YET IN</div>
+    <div class="slot-card">RESERVED — FIRST REVIEW NOT YET IN</div>
+    <div class="slot-card">RESERVED — FIRST REVIEW NOT YET IN</div>
+  </div>
+
+  <div class="section-flourish reveal">&lt;-•-•◇•-•-( <b>FUN FACTS</b> )-•-•◇•-•-&gt;</div>
+  <div class="facts-grid reveal">
+    <div class="fact-card"><span class="fact-mark">◆</span><p>Contact Epistemology's core test: a claim earns belief by surviving contact with structure or physical consequence — not by citing who said it.</p></div>
+    <div class="fact-card"><span class="fact-mark">△</span><p>India 528 isn't a route drawn on a map — it's a route Draven intends to physically walk, one state at a time, 2027 through 2028.</p></div>
+    <div class="fact-card"><span class="fact-mark">☰</span><p>Draven Intel's verdicts are timestamped on purpose — accuracy gets tracked against what actually happened, not just what the model predicted.</p></div>
+    <div class="fact-card"><span class="fact-mark">✦</span><p>The Changeover has no named author by design — it's credited to "Unspoken Indians," open for anyone to correct or translate.</p></div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-title">DRAVEN</div>
+    <div class="f-motto">STRUCTURA NON AUCTORITATE</div>
+    <div class="socials">
+      <a href="https://x.com/Draven683720">X</a>
+      <a href="https://t.me/dravencrypto1">TELEGRAM</a>
+      <a href="https://www.instagram.com/draven_crypto">INSTAGRAM</a>
+      <a href="https://www.youtube.com/@thepiphunter0">YOUTUBE</a>
+      <a href="#internet">FARCASTER</a>
+      <a href="https://topmate.io/sumit_kumar615">TOPMATE</a>
+    </div>
+    <div class="f-bottom">&lt;-•-•◇•-•-(/T·E·S·T/S·T·R·U·C·T·U·R·E/)-•-•◇•-•-&gt;</div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+// draven.in — matrix-theme build (Pliny-style)
+function initMatrixRain() {
+    const canvas = document.getElementById("rain");
+    if (!canvas)
+        return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx)
+        return;
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+    const chars = "アイウエオカキクケコサシスセソ01ΔΣΩ∆◆◇✦01";
+    const fontSize = 15;
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = new Array(columns).fill(1);
+    function draw() {
+        if (!ctx || !canvas)
+            return;
+        ctx.fillStyle = "rgba(3, 8, 5, 0.06)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            const isCyan = Math.random() > 0.92;
+            ctx.fillStyle = isCyan ? "rgba(93, 226, 196, 0.55)" : "rgba(45, 140, 90, 0.35)";
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    setInterval(draw, 55);
+}
+const QUOTES = [
+    { la: "FORTES FORTVNA IVVAT", en: "FORTUNE FAVORS THE BOLD" },
+    { la: "ALEA IACTA EST", en: "THE DIE IS CAST" },
+    { la: "STRUCTURA NON AUCTORITATE", en: "STRUCTURE, NOT AUTHORITY" },
+    { la: "VERITATEM DEGLUTIAM", en: "I WILL SWALLOW TRUTH" },
+    { la: "SOMNIA TUA REVELABO", en: "I WILL EXPOSE YOUR DREAMS" }
+];
+function initQuoteCycler() {
+    const el = document.getElementById("motto");
+    if (!el)
+        return;
+    let i = 0;
+    let hovering = false;
+    function render() {
+        if (hovering)
+            return;
+        el.textContent = QUOTES[i].la + " _";
+    }
+    render();
+    el.addEventListener("mouseenter", () => {
+        hovering = true;
+        el.classList.add("translated");
+        el.textContent = QUOTES[i].en;
+    });
+    el.addEventListener("mouseleave", () => {
+        hovering = false;
+        el.classList.remove("translated");
+        render();
+    });
+    setInterval(() => {
+        if (hovering)
+            return;
+        i = (i + 1) % QUOTES.length;
+        el.style.opacity = "0";
+        setTimeout(() => {
+            render();
+            el.style.opacity = "1";
+        }, 350);
+    }, 4200);
+}
+function initReveal() {
+    const els = Array.from(document.querySelectorAll(".reveal"));
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("on");
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    els.forEach((el) => io.observe(el));
+}
+function initCursor() {
+    const tri = document.getElementById("cursor-triangle");
+    if (!tri)
+        return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+        return;
+    document.addEventListener("mousemove", (e) => {
+        tri.style.left = e.clientX + "px";
+        tri.style.top = e.clientY + "px";
+    });
+    const hoverables = document.querySelectorAll("a, .p-card, #motto");
+    hoverables.forEach((el) => {
+        el.addEventListener("mouseenter", () => tri.classList.add("hovering"));
+        el.addEventListener("mouseleave", () => tri.classList.remove("hovering"));
+    });
+}
+function initMarquee() {
+    const track = document.getElementById("marquee-track");
+    if (!track)
+        return;
+    // Duplicate content once for seamless looping
+    track.innerHTML = track.innerHTML + track.innerHTML;
+}
+document.addEventListener("DOMContentLoaded", () => {
+    initMatrixRain();
+    initQuoteCycler();
+    initReveal();
+    initCursor();
+    initMarquee();
+});
+</script>
+</body>
+</html>
